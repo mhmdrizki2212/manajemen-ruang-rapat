@@ -9,12 +9,12 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('jadwals', function (Blueprint $table) {
             $table->id();
             $table->foreignId('ruang_id')->constrained()->onDelete('cascade');
-            $table->foreignId('user_admin_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_admin_id')->constrained('users')->onDelete('cascade');
             $table->string('nama_kegiatan');
             $table->string('fungsi'); // divisi
             $table->date('tanggal');
@@ -23,7 +23,6 @@ return new class extends Migration
             $table->timestamps();
         });
     }
-    
 
     /**
      * Reverse the migrations.
