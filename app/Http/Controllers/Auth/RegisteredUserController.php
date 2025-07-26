@@ -28,23 +28,28 @@ class RegisteredUserController extends Controller
      * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request): RedirectResponse
-    {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
+{
+    $request->validate([
+        'name' => ['required', 'string', 'max:255'],
+        'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+        'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        // jika ingin input role dari form
+        // 'role' => ['required', 'in:user,admin'],
+    ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+    $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+        'role' => 'user', // atau $request->role
+    ]);
 
-        event(new Registered($user));
+    event(new Registered($user));
 
-        Auth::login($user);
+    Auth::login($user);
 
-        return redirect(route('back/home-admin', absolute: false));
-    }
+    // Redirect berdasarkan role
+    return $user->role === 'admin' ? redirect('/admin') : redirect('/user');
+}
+
 }

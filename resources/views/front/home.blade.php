@@ -7,7 +7,7 @@
     <h1>Selamat Datang di Sistem Manajemen Ruang Rapat</h1>
     <p>Ini halaman publik, bisa diakses siapa saja tanpa login.</p>
 
-    <a href="/jadwal-rapat">Lihat Jadwal Rapat</a>
+    <a href="{{route('user.jadwal')}}">Lihat Jadwal Rapat</a>
 
     {{-- Jika user sudah login, tampilkan tombol ke halaman admin --}}
     @auth
@@ -20,5 +20,11 @@
         <br><br>
         <a href="{{ route('login') }}">🔐 Login sebagai Admin</a>
     @endguest
+
+
+    <form method="POST" action="{{ route('logout') }}">
+        @csrf
+        <button type="submit">Logout</button>
+    </form>
 </body>
 </html>

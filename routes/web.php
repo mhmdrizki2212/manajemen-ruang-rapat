@@ -2,28 +2,76 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+
+/*
+|--------------------------------------------------------------------------
+| Public Routes
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/', function () {
-    return view('front.home');
+    if (Auth::check()) {
+        return Auth::user()->role === 'admin'
+            ? redirect('/admin')
+            : redirect('/user');
+    }
+    return redirect('/login');
 });
 
-Route::get('/jadwal-rapat', function () {
-    return view('front.jadwal'); // akan membuka resources/views/jadwal-rapat.blade.php
-});
+
+/*
+|--------------------------------------------------------------------------
+| Dashboard (Default Breeze)
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return redirect(Auth::user()->role === 'admin' ? '/admin' : '/user');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-// ⬇️ Tambahkan route ke halaman admin
-Route::get('/back/home-admin', function () {
-    return view('back.home-admin');
-})->middleware(['auth'])->name('home-admin');
+/*
+|--------------------------------------------------------------------------
+| Protected Routes Based on Role
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin', function () {
+        return view('back.home-admin');
+    })->name('admin.home');
+});
+
+Route::middleware(['auth', 'role:user'])->group(function () {
+    Route::get('/user', function () {
+        return view('front.home');
+    })->name('user.home');
+
+    // Route tambahan khusus user
+    Route::get('/user/jadwal', function () {
+        return view('front.jadwal');
+    })->name('user.jadwal');
+});
+
+
+
+/*
+|--------------------------------------------------------------------------
+| User Profile Routes
+|--------------------------------------------------------------------------
+*/
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+
+/*
+|--------------------------------------------------------------------------
+| Auth Routes (Login/Register)
+|--------------------------------------------------------------------------
+*/
 
 require __DIR__.'/auth.php';
