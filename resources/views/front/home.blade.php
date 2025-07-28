@@ -9,11 +9,7 @@
 
     <a href="{{route('user.jadwal')}}">Lihat Jadwal Rapat</a>
 
-    {{-- Jika user sudah login, tampilkan tombol ke halaman admin --}}
-    @auth
-        <br><br>
-        <a href="{{ route('admin.home') }}">➡ Masuk ke Halaman Admin</a>
-    @endauth
+
 
     {{-- Jika belum login, tampilkan tombol login --}}
     @guest

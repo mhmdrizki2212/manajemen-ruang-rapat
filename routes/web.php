@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +41,11 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin', function () {
         return view('back.home-admin');
     })->name('admin.home');
+
+    Route::resource('users', UserController::class);
+
+
+
 });
 
 Route::middleware(['auth', 'role:user'])->group(function () {
