@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modern Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
         :root {
             --primary-red: #fd0017;
@@ -115,19 +117,48 @@
         
         <!-- Main Content -->
         <div class="flex-1 overflow-auto">
+            @if(session('not_found'))
+    <div class="mb-4 px-4 py-3 bg-yellow-100 text-yellow-800 rounded-lg shadow text-sm">
+        {{ session('not_found') }}
+    </div>
+@endif
+
  
             <!-- Dashboard Content -->
             <main class="p-6">
                 
-                <h1 class="text-2xl font-bold text-gray-800 mb-6">Users Management</h1>
-
+                <div class="flex items-center justify-between mb-6">
+                    <h1 class="text-2xl font-bold text-gray-800">Users Management</h1>
+                
+                    <form action="{{ route('users.index') }}" method="GET" class="flex items-center space-x-2">
+                        <input
+                            type="text"
+                            name="search"
+                            value="{{ request('search') }}"
+                            placeholder="Cari nama atau email..."
+                            class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                        />
+                        <button
+                            type="submit"
+                            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200 text-sm">
+                            Cari
+                        </button>
+                    </form>
+                </div>
+                
                 <!-- Recent Orders -->
                 <div class="bg-white rounded-xl shadow-sm overflow-hidden mb-8">
                     <div class="px-6 py-4 border-b border-gray-200">
                         <div class="flex items-center justify-between">
                             <h3 class="text-lg font-semibold text-gray-800">List User</h3>
+                    
+                            <a href="{{ route('users.create') }}"
+                               class="inline-flex items-center px-4 py-2 bg-green-500 text-white text-sm font-medium rounded-lg shadow hover:bg-green-600 transition duration-150 ease-in-out">
+                                + Tambah User
+                            </a>
                         </div>
                     </div>
+                    
                     
                     <div class="overflow-x-auto">
                         <div class="overflow-x-auto">
@@ -151,12 +182,25 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ $user->name }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ $user->email }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-blue-600">
-                                            <a href="{{ route('users.edit', $user->id) }}" class="hover:underline">Edit</a>
-                                            <form action="{{ route('users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Are you sure to delete this user?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-600 hover:underline">Delete</button>
-                                            </form>
+                                            <div class="flex items-center space-x-2">
+                                                <!-- Tombol Edit -->
+                                                <a href="{{ route('users.edit', $user->id) }}" 
+                                                   class="inline-flex items-center px-3 py-1.5 bg-blue-500 text-white text-xs font-medium rounded hover:bg-blue-600 transition duration-150 ease-in-out">
+                                                    Edit
+                                                </a>
+                                            
+                                                <!-- Tombol Delete -->
+                                                <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="delete-user-form">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" 
+                                                        class="inline-flex items-center px-3 py-1.5 bg-red-500 text-white text-xs font-medium rounded hover:bg-red-600 transition duration-150 ease-in-out">
+                                                        Delete
+                                                    </button>
+                                                </form>
+                                                
+                                            </div>
+                                            
                                         </td>
                                     </tr>
                                     @endforeach
@@ -166,94 +210,113 @@
                         
                     </div>
                     
+                    @if ($users->hasPages())
                     <div class="px-6 py-4 border-t border-gray-200">
                         <div class="flex items-center justify-between">
-                            <div class="text-sm text-gray-500">Showing <span class="font-medium">1</span> to <span class="font-medium">5</span> of <span class="font-medium">42</span> orders</div>
-                            <div class="flex space-x-2">
-                                <button class="px-3 py-1 rounded-lg border border-gray-200 text-sm text-gray-600 hover:bg-gray-50">Previous</button>
-                                <button class="px-3 py-1 rounded-lg bg-blue-500 text-white text-sm hover:bg-blue-600">1</button>
-                                <button class="px-3 py-1 rounded-lg border border-gray-200 text-sm text-gray-600 hover:bg-gray-50">2</button>
-                                <button class="px-3 py-1 rounded-lg border border-gray-200 text-sm text-gray-600 hover:bg-gray-50">3</button>
-                                <button class="px-3 py-1 rounded-lg border border-gray-200 text-sm text-gray-600 hover:bg-gray-50">Next</button>
+                            <div class="text-sm text-gray-500">
+                                Menampilkan
+                                <span class="font-medium">{{ $users->firstItem() }}</span>
+                                sampai
+                                <span class="font-medium">{{ $users->lastItem() }}</span>
+                                dari total
+                                <span class="font-medium">{{ $users->total() }}</span> user
+                            </div>
+                
+                            <div class="flex space-x-1">
+                                {{-- Tombol Sebelumnya --}}
+                                @if ($users->onFirstPage())
+                                    <span class="px-3 py-1.5 text-sm text-gray-400 border rounded">← Prev</span>
+                                @else
+                                    <a href="{{ $users->previousPageUrl() }}{{ request('search') ? '&search=' . request('search') : '' }}"
+                                        class="px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-100 border rounded transition">← Prev</a>
+                                @endif
+                
+                                {{-- Tombol Angka --}}
+                                @for ($i = 1; $i <= $users->lastPage(); $i++)
+                                    <a href="{{ $users->url($i) }}{{ request('search') ? '&search=' . request('search') : '' }}"
+                                       class="px-3 py-1.5 text-sm border rounded
+                                            {{ $i == $users->currentPage() ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-100' }}
+                                            transition">
+                                        {{ $i }}
+                                    </a>
+                                @endfor
+                
+                                {{-- Tombol Selanjutnya --}}
+                                @if ($users->hasMorePages())
+                                    <a href="{{ $users->nextPageUrl() }}{{ request('search') ? '&search=' . request('search') : '' }}"
+                                       class="px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-100 border rounded transition">Next →</a>
+                                @else
+                                    <span class="px-3 py-1.5 text-sm text-gray-400 border rounded">Next →</span>
+                                @endif
                             </div>
                         </div>
                     </div>
+                @endif
+                
+                    
+                    
                 </div>
                 
                 <!-- Recent Activity -->
-                <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-                    <div class="px-6 py-4 border-b border-gray-200">
-                        <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-semibold text-gray-800">Recent Activity</h3>
-                            <button class="text-sm font-medium text-blue-500 hover:text-blue-700">View All</button>
-                        </div>
-                    </div>
-                    
-                    <div class="divide-y divide-gray-200">
-                        <div class="py-4 px-6 flex items-start">
-                            <img src="https://placehold.co/40x40" alt="User profile photo with blonde hair and business attire" class="w-10 h-10 rounded-full">
-                            <div class="ml-3 flex-1">
-                                <div class="flex items-center justify-between">
-                                    <h4 class="text-sm font-medium text-gray-900">Sarah Johnson</h4>
-                                    <span class="text-xs text-gray-500">2 hours ago</span>
-                                </div>
-                                <p class="text-sm text-gray-600 mt-1">Completed account setup</p>
-                                <div class="mt-2 text-xs text-gray-500 flex items-center">
-                                    <span class="inline-block w-2 h-2 rounded-full bg-green-500 mr-2"></span>
-                                    <span>Successful</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="py-4 px-6 flex items-start">
-                            <img src="https://placehold.co/40x40" alt="User profile photo with glasses and formal wear" class="w-10 h-10 rounded-full">
-                            <div class="ml-3 flex-1">
-                                <div class="flex items-center justify-between">
-                                    <h4 class="text-sm font-medium text-gray-900">Michael Brown</h4>
-                                    <span class="text-xs text-gray-500">4 hours ago</span>
-                                </div>
-                                <p class="text-sm text-gray-600 mt-1">Updated payment information</p>
-                                <div class="mt-2 text-xs text-gray-500 flex items-center">
-                                    <span class="inline-block w-2 h-2 rounded-full bg-blue-500 mr-2"></span>
-                                    <span>Pending review</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="py-4 px-6 flex items-start">
-                            <img src="https://placehold.co/40x40" alt="User profile photo with dark hair and casual attire" class="w-10 h-10 rounded-full">
-                            <div class="ml-3 flex-1">
-                                <div class="flex items-center justify-between">
-                                    <h4 class="text-sm font-medium text-gray-900">Emily Davis</h4>
-                                    <span class="text-xs text-gray-500">6 hours ago</span>
-                                </div>
-                                <p class="text-sm text-gray-600 mt-1">Submitted a support ticket</p>
-                                <div class="mt-2 text-xs text-gray-500 flex items-center">
-                                    <span class="inline-block w-2 h-2 rounded-full bg-yellow-500 mr-2"></span>
-                                    <span>Waiting for response</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="py-4 px-6 flex items-start">
-                            <img src="https://placehold.co/40x40" alt="User profile photo with beard and professional appearance" class="w-10 h-10 rounded-full">
-                            <div class="ml-3 flex-1">
-                                <div class="flex items-center justify-between">
-                                    <h4 class="text-sm font-medium text-gray-900">David Wilson</h4>
-                                    <span class="text-xs text-gray-500">Yesterday</span>
-                                </div>
-                                <p class="text-sm text-gray-600 mt-1">Placed a new order (#7685)</p>
-                                <div class="mt-2 text-xs text-gray-500 flex items-center">
-                                    <span class="inline-block w-2 h-2 rounded-full bg-green-500 mr-2"></span>
-                                    <span>Completed</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
             </main>
         </div>
     </div>
+
+    @if (session('success'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: "{{ session('success') }}",
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK'
+            });
+        });
+    </script>
+@endif
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const deleteForms = document.querySelectorAll('.delete-user-form');
+
+        deleteForms.forEach(form => {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault(); // Mencegah submit langsung
+
+                Swal.fire({
+                    title: 'Yakin ingin menghapus?',
+                    text: "Data user akan dihapus secara permanen!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit(); // Submit form jika dikonfirmasi
+                    }
+                });
+            });
+        });
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+@if(session('not_found'))
+<script>
+    Swal.fire({
+        icon: 'warning',
+        title: 'Tidak Ditemukan!',
+        text: '{{ session('not_found') }}',
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: 'OK'
+    });
+</script>
+@endif
+
 
     <script>
         // Mobile sidebar toggle

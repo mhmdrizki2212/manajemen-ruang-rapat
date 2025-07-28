@@ -9,11 +9,28 @@ use Illuminate\Support\Facades\Hash;
 class UserController extends Controller
 {
     // ✅ Tampilkan semua user
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::all();
-        return view('back.users.index', compact('users'));
+        $search = $request->input('search');
+    
+        $users = User::query()
+            ->when($search, function ($query, $search) {
+                $query->where('name', 'like', "%{$search}%")
+                      ->orWhere('email', 'like', "%{$search}%");
+            })
+            ->latest() // Menampilkan user terbaru di atas
+            ->paginate(7)
+            ->withQueryString(); // Penting agar parameter 'search' tetap ada saat pindah halaman
+
+              // Jika hasil pencarian kosong dan ada input pencarian
+            if ($search && $users->total() == 0) {
+                return redirect()->route('users.index')->with('not_found', 'User/Admin dengan nama atau email "' . $search . '" tidak ditemukan.');
+            }
+    
+        return view('back.users.index', compact('users', 'search'));
     }
+    
+
 
     // ✅ Form tambah user
     public function create()
@@ -50,20 +67,26 @@ class UserController extends Controller
     // ✅ Proses update user
     public function update(Request $request, User $user)
     {
-        $request->validate([
-            'name'  => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'role'  => 'required|string',
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'role' => 'required|in:admin,user',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'password' => 'nullable|min:6|confirmed',
         ]);
-
-        $user->update([
-            'name'  => $request->name,
-            'email' => $request->email,
-            'role'  => $request->role,
-        ]);
-
-        return redirect()->route('users.index')->with('success', 'User berhasil diperbarui.');
+    
+        $user->name = $validated['name'];
+        $user->role = $validated['role'];
+        $user->email = $validated['email'];
+    
+        if (!empty($validated['password'])) {
+            $user->password = bcrypt($validated['password']);
+        }
+    
+        $user->save();
+    
+        return redirect()->route('users.index')->with('success', 'User berhasil diperbarui!');
     }
+    
 
     // ✅ Hapus user
     public function destroy(User $user)
