@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\RuangController;
+use App\Http\Controllers\JadwalController;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,7 +45,18 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     })->name('admin.home');
 
     Route::resource('users', UserController::class);
+    Route::resource('ruangs', RuangController::class);
+    Route::resource('jadwals', JadwalController::class);
 
+    Route::get('/get-ruangs/{gedungId}', [JadwalController::class, 'getRuangs']);
+    // routes/web.php
+    Route::get('/get-ruang/{gedung_id}', function($gedung_id) {
+        $ruang = App\Models\Ruang::where('gedung_id', $gedung_id)->get();
+        return response()->json($ruang);
+    });
+    // web.php
+Route::get('/get-lantai/{gedung_id}', [RuangController::class, 'getLantai']);
+Route::get('/get-ruang/{gedung_id}/{lantai}', [RuangController::class, 'getRuang']);
 
 
 });

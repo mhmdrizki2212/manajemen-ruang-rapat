@@ -49,7 +49,7 @@
                 <img src="{{ asset('images/logo.png') }}" alt="Logo Pertamina Hulu Rokan" class="h-20 w-20 object-contain rounded-full bg-white p-2 shadow-md mb-2">
                 <div class="text-center leading-tight">
                     <span class="text-[22px] font-extrabold text-[#1A1A1A] tracking-tight uppercase block">SIMARU</span>
-                    <span class="text-xs text-gray-500">Sistem Informasi Manajemen Rapat</span>
+                    <span class="text-xs text-gray-500">Sistem Informasi Manajemen Ruang</span>
                 </div>
                 
                 
@@ -68,7 +68,7 @@
                 </a>
         
                 <!-- Products -->
-                <a href="#" class="flex items-center py-3 px-4 rounded-lg mb-2 text-gray-700 hover:bg-gray-100 hover:text-[#0073fe] transition duration-200 font-medium">
+                <a href="{{ route('ruangs.index') }}" class="flex items-center py-3 px-4 rounded-lg mb-2 text-gray-700 hover:bg-gray-100 hover:text-[#0073fe] transition duration-200 font-medium">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-inherit" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                     </svg>
@@ -76,11 +76,11 @@
                 </a>
         
                 <!-- Calendar -->
-                <a href="#" class="flex items-center py-3 px-4 rounded-lg mb-2 text-gray-700 hover:bg-gray-100 hover:text-[#0073fe] transition duration-200 font-medium">
+                <a href="{{ route('jadwals.index') }}" class="flex items-center py-3 px-4 rounded-lg mb-2 text-gray-700 hover:bg-gray-100 hover:text-[#0073fe] transition duration-200 font-medium">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-inherit" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                    <span class="ml-3">Jadwal Rapat</span>
+                    <span class="ml-3">Jadwal Ruang</span>
                 </a>
         
                 <!-- Users -->
@@ -113,7 +113,6 @@
         </div>
         
         
-        <!-- Main Content -->
         <!-- Main Content -->
 <div class="flex-1 overflow-auto">
     <div class="flex-1 overflow-auto px-6 py-8 bg-gray-50 min-h-screen">

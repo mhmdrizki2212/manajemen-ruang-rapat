@@ -17,11 +17,12 @@ class Jadwal extends Model
 
     public function ruang()
     {
-        return $this->belongsTo(Ruang::class);
+        return $this->belongsTo(Ruang::class, 'ruang_id');
     }
-
+    
     public function userAdmin()
     {
-        return $this->belongsTo(UserAdmin::class);
+        return $this->belongsTo(User::class, 'user_admin_id');
     }
+    
 }

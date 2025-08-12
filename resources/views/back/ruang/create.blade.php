@@ -71,7 +71,7 @@
                 </a>
         
                 <!-- Products -->
-                <a href="{{ route('ruangs.index') }}" class="flex items-center py-3 px-4 rounded-lg mb-2 text-gray-700 hover:bg-gray-100 hover:text-[#0073fe] transition duration-200 font-medium">
+                <a href="{{ route('ruangs.index') }}" class="flex items-center py-3 px-4 rounded-lg mb-2 text-white bg-red-500 hover:bg-red-600 transition-all duration-200 font-semibold shadow-sm"> 
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-inherit" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                     </svg>
@@ -87,7 +87,7 @@
                 </a>
         
                 <!-- Users -->
-                <a href="{{ route('users.index') }}" class="flex items-center py-3 px-4 rounded-lg mb-2 text-white bg-red-500 hover:bg-red-600 transition-all duration-200 font-semibold shadow-sm">
+                <a href="{{ route('users.index') }}" class="flex items-center py-3 px-4 rounded-lg mb-2 text-gray-700 hover:bg-gray-100 hover:text-[#0073fe] transition duration-200 font-medium">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-inherit" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                     </svg>
@@ -115,87 +115,95 @@
             </div>
         </div>
         
-        
         <!-- Main Content -->
-        <div class="flex-1 overflow-auto">
-         
- 
-            <div class="flex-1 overflow-auto px-6 py-8 bg-gray-50 min-h-screen">
-                <div class="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-lg">
-                    <h2 class="text-3xl font-bold text-gray-800 mb-8 border-b pb-4">Tambah User Baru</h2>
+<div class="flex-1 overflow-auto">
+    <div class="flex-1 overflow-auto px-6 py-8 bg-gray-50 min-h-screen">
+        <div class="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-lg">
+            <h2 class="text-3xl font-bold text-gray-800 mb-8 border-b pb-4">
+                {{ isset($ruang) ? 'Edit Ruangan' : 'Tambah Ruangan Baru' }}
+            </h2>
             
-                    <form method="POST" action="{{ route('users.store') }}" class="space-y-6">
-                        @csrf
+            <form method="POST" action="{{ isset($ruang) ? route('ruangs.update', $ruang->id) : route('ruangs.store') }}" class="space-y-6">
+                @csrf
+                @if(isset($ruang))
+                    @method('PUT')
+                @endif
             
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- Name -->
-                            <div>
-                                <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
-                                <input type="text" name="name" id="name" required
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-200" />
-                            </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Nama Ruangan -->
+                    <div class="md:col-span-2">
+                        <label for="nama" class="block text-sm font-medium text-gray-700 mb-1">Nama Ruangan</label>
+                        <input type="text" name="nama" id="nama"
+                            value="{{ old('nama', $ruang->nama ?? '') }}" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-200" />
+                        @error('nama')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
             
-                            <!-- Role -->
-                            <div>
-                                <label for="role" class="block text-sm font-medium text-gray-700 mb-1">Role</label>
-                                <select name="role" id="role" required
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-200">
-                                    <option value="">Pilih Role</option>
-                                    <option value="user">User</option>
-                                    <option value="admin">Admin</option>
-                                </select>
-                            </div>
+                    <!-- Lantai -->
+                    <div>
+                        <label for="lantai" class="block text-sm font-medium text-gray-700 mb-1">Lantai</label>
+                        <input type="number" name="lantai" id="lantai"
+                            value="{{ old('lantai', $ruang->lantai ?? '') }}" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-200" />
+                        @error('lantai')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
             
-                            <!-- Email -->
-                            <div class="md:col-span-2">
-                                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                                <input type="email" name="email" id="email" required
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-200" />
-                            </div>
-            
-                            <!-- Password -->
-                            <div>
-                                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                                <input type="password" name="password" id="password" required
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-200" />
-                            </div>
-            
-                            <!-- Konfirmasi Password -->
-                            <div>
-                                <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-1">Konfirmasi Password</label>
-                                <input type="password" name="password_confirmation" id="password_confirmation" required
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-200" />
-                                    
-                                @if ($errors->has('password'))
-                                    <p class="text-red-500 text-sm mt-1">
-                                        {{ $errors->first('password') == 'The password confirmation does not match.' 
-                                            ? 'Konfirmasi password tidak sesuai.' 
-                                            : $errors->first('password') }}
-                                    </p>
-                                @endif
-                            </div>
-                            
-                        </div>
-            
-                        <!-- Tombol Simpan -->
-                        <div class="flex justify-end mt-8 space-x-4">
-                            <a href="{{ url()->previous() }}"
-                               class="inline-flex items-center px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium rounded-lg shadow-sm transition duration-200">
-                                ← Kembali
-                            </a>
-                        
-                            <button type="submit"
-                                class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition duration-200">
-                                Simpan User
-                            </button>
-                        </div>
-                        
-                        
-                    </form>
+                    <!-- Gedung -->
+                    <div>
+                        <label for="gedung_id" class="block text-sm font-medium text-gray-700 mb-1">Gedung</label>
+                        <select name="gedung_id" id="gedung_id" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-200">
+                            <option value="">Pilih Gedung</option>
+                            @foreach ($gedungs as $gedung)
+                                <option value="{{ $gedung->id }}"
+                                    {{ old('gedung_id', $ruang->gedung_id ?? '') == $gedung->id ? 'selected' : '' }}>
+                                    {{ $gedung->nama }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('gedung_id')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700">Fasilitas</label>
+                        @foreach($fasilitas as $item)
+                            <label class="inline-flex items-center mt-2">
+                                <input type="checkbox" name="fasilitas[]" value="{{ $item->id }}"
+                                    {{ in_array($item->id, $selectedFasilitas) ? 'checked' : '' }}
+                                    class="form-checkbox h-5 w-5 text-indigo-600">
+                                <span class="ml-2 text-gray-700">{{ $item->nama }}</span>
+                            </label><br>
+                        @endforeach
+                    </div>
+                    
+                    
                 </div>
-            </div>
+            
+                <!-- Tombol Simpan -->
+                <div class="flex justify-end mt-8 space-x-4">
+                    <a href="{{ route('ruangs.index') }}"
+                        class="inline-flex items-center px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium rounded-lg shadow-sm transition duration-200">
+                        ← Kembali
+                    </a>
+            
+                    <button type="submit"
+                        class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition duration-200">
+                        {{ isset($ruang) ? 'Simpan Perubahan' : 'Simpan Ruangan' }}
+                    </button>
+                </div>
+            </form>
+            
             
         </div>
+    </div>
+</div>
+
+
     </div>
 
     <script>

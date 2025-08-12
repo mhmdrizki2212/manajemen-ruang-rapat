@@ -20,4 +20,10 @@ class Ruang extends Model
     {
         return $this->hasMany(Jadwal::class);
     }
+
+    public function fasilitas()
+    {
+        return $this->belongsToMany(Fasilitas::class, 'fasilitas_ruang');
+    }
+
 }
