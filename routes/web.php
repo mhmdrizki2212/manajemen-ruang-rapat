@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\RuangController;
 use App\Http\Controllers\JadwalController;
 
+
 /*
 |--------------------------------------------------------------------------
 | Public Routes
@@ -40,9 +41,7 @@ Route::get('/dashboard', function () {
 */
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin', function () {
-        return view('back.home-admin');
-    })->name('admin.home');
+    Route::get('/admin', [App\Http\Controllers\AdminController::class, 'index'])->name('admin.home');
 
     Route::resource('users', UserController::class);
     Route::resource('ruangs', RuangController::class);
@@ -57,6 +56,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // web.php
 Route::get('/get-lantai/{gedung_id}', [RuangController::class, 'getLantai']);
 Route::get('/get-ruang/{gedung_id}/{lantai}', [RuangController::class, 'getRuang']);
+Route::get('/ruangs/{id}/history', [\App\Http\Controllers\HistoryController::class, 'index'])
+    ->name('ruangs.history');
+
 
 
 });

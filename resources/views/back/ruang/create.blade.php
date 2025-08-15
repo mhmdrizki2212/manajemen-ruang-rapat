@@ -123,11 +123,9 @@
                 {{ isset($ruang) ? 'Edit Ruangan' : 'Tambah Ruangan Baru' }}
             </h2>
             
-            <form method="POST" action="{{ isset($ruang) ? route('ruangs.update', $ruang->id) : route('ruangs.store') }}" class="space-y-6">
+            <form method="POST" action="{{ isset($ruang) ? route('ruangs.update', $ruang->id) : route('ruangs.store') }}" class="space-y-6" enctype="multipart/form-data">
                 @csrf
-                @if(isset($ruang))
-                    @method('PUT')
-                @endif
+               
             
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Nama Ruangan -->
@@ -169,7 +167,9 @@
                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                         @enderror
                     </div>
-                    <div class="mb-4">
+            
+                    <!-- Fasilitas -->
+                    <div class="mb-4 md:col-span-2">
                         <label class="block text-sm font-medium text-gray-700">Fasilitas</label>
                         @foreach($fasilitas as $item)
                             <label class="inline-flex items-center mt-2">
@@ -180,8 +180,27 @@
                             </label><br>
                         @endforeach
                     </div>
-                    
-                    
+            
+                    <!-- Upload Gambar -->
+                    <div class="md:col-span-2">
+                        <label for="img" class="block text-sm font-medium text-gray-700 mb-1">Upload Gambar</label>
+                        <input type="file" name="img" id="img" accept=".jpg,.jpeg,.png"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-200"
+                            onchange="previewImage(event)" />
+            
+                        <p class="text-xs text-gray-500 mt-1">Format: JPG, JPEG, PNG. Maksimal 2MB.</p>
+                        @error('img')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+            
+                        <!-- Tempat Preview -->
+                        <div class="mt-3">
+                            <img id="preview"
+                                src="{{ isset($ruang) && $ruang->img ? asset('storage/'.$ruang->img) : '#' }}"
+                                alt="Preview Gambar"
+                                class="max-w-xs rounded-lg shadow-md border border-gray-200 {{ isset($ruang) && $ruang->img ? '' : 'hidden' }}" />
+                        </div>
+                    </div>
                 </div>
             
                 <!-- Tombol Simpan -->
@@ -198,6 +217,42 @@
                 </div>
             </form>
             
+            <script>
+            function previewImage(event) {
+                const file = event.target.files[0];
+                const preview = document.getElementById('preview');
+            
+                if (file) {
+                    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+                    const maxSize = 2 * 1024 * 1024; // 2MB
+            
+                    if (!allowedTypes.includes(file.type)) {
+                        alert('Hanya file JPG, JPEG, atau PNG yang diperbolehkan.');
+                        event.target.value = '';
+                        preview.classList.add('hidden');
+                        return;
+                    }
+            
+                    if (file.size > maxSize) {
+                        alert('Ukuran file maksimal 2MB.');
+                        event.target.value = '';
+                        preview.classList.add('hidden');
+                        return;
+                    }
+            
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.src = e.target.result;
+                        preview.classList.remove('hidden');
+                    }
+                    reader.readAsDataURL(file);
+                } else {
+                    preview.src = "#";
+                    preview.classList.add('hidden');
+                }
+            }
+            </script>
+            
             
         </div>
     </div>
@@ -205,6 +260,43 @@
 
 
     </div>
+        
+        <script>
+            function previewImage(event) {
+                const file = event.target.files[0];
+                const preview = document.getElementById('preview');
+        
+                if (file) {
+                    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+                    const maxSize = 2 * 1024 * 1024; // 2MB
+        
+                    if (!allowedTypes.includes(file.type)) {
+                        alert('Hanya file JPG, JPEG, atau PNG yang diperbolehkan.');
+                        event.target.value = '';
+                        preview.classList.add('hidden');
+                        return;
+                    }
+        
+                    if (file.size > maxSize) {
+                        alert('Ukuran file maksimal 2MB.');
+                        event.target.value = '';
+                        preview.classList.add('hidden');
+                        return;
+                    }
+        
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.src = e.target.result;
+                        preview.classList.remove('hidden');
+                    }
+                    reader.readAsDataURL(file);
+                } else {
+                    preview.src = "#";
+                    preview.classList.add('hidden');
+                }
+            }
+        </script>
+        
 
     <script>
         // Mobile sidebar toggle

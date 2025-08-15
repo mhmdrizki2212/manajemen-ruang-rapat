@@ -158,70 +158,58 @@
         </div>
 
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
+            <table class="min-w-full border border-gray-200 rounded-lg overflow-hidden shadow-sm">
                 <thead class="bg-gray-50">
-                    <tr class="bg-gray-100 text-gray-700 text-sm font-semibold tracking-wide">
-                        <th class="px-6 py-4 text-left">No.</th>
-                        <th class="px-6 py-4 text-left">Nama Ruangan</th>
-                        <th class="px-6 py-4 text-left">Nama User</th>
-                        <th class="px-6 py-4 text-left">Nama Kegiatan</th>
-                        <th class="px-6 py-4 text-left">Fungsi</th>
-                        <th class="px-6 py-4 text-left">Tanggal</th>
-                        <th class="px-6 py-4 text-left">Jam Mulai</th>
-                        <th class="px-6 py-4 text-left">Jam Selesai</th>
-                        <th class="px-6 py-4 text-left">Action</th>
+                    <tr class="text-gray-700 text-xs font-semibold uppercase tracking-wider">
+                        <th class="px-4 py-3 text-left">No</th>
+                        <th class="px-4 py-3 text-left">Ruangan</th>
+                        <th class="px-4 py-3 text-left">User</th>
+                        <th class="px-4 py-3 text-left">Kegiatan</th>
+                        <th class="px-4 py-3 text-left">Fungsi</th>
+                        <th class="px-4 py-3 text-left">Tanggal</th>
+                        <th class="px-4 py-3 text-left">Mulai</th>
+                        <th class="px-4 py-3 text-left">Selesai</th>
+                        <th class="px-4 py-3 text-center">Action</th>
+                        <th class="px-4 py-3 text-center">Status</th>
                     </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
+                <tbody class="bg-white divide-y divide-gray-200 text-sm">
                     @foreach ($jadwals as $jadwal)
                         <tr>
-                            <td class="px-6 py-4 text-sm text-gray-700">
-                                {{ $loop->iteration + ($jadwals->currentPage() - 1) * $jadwals->perPage() }}
-                            </td>
-                            <td class="px-6 py-4 text-sm font-medium text-gray-900">
-                                {{ $jadwal->ruang->nama ?? '-' }}
-                            </td>
-                            <td class="px-6 py-4 text-sm text-gray-700">
-                                {{ $jadwal->userAdmin->name ?? '-' }}
-                            </td>
-                            <td class="px-6 py-4 text-sm text-gray-700">
-                                {{ $jadwal->nama_kegiatan }}
-                            </td>
-                            <td class="px-6 py-4 text-sm text-gray-700">
-                                {{ $jadwal->fungsi }}
-                            </td>
-                            <td class="px-6 py-4 text-sm text-gray-700">
-                                {{ $jadwal->tanggal }}
-                            </td>
-                            <td class="px-6 py-4 text-sm text-gray-700">
-                                {{ $jadwal->jam_mulai }}
-                            </td>
-                            <td class="px-6 py-4 text-sm text-gray-700">
-                                {{ $jadwal->jam_selesai }}
-                            </td>
-                            <td class="px-6 py-4 text-sm text-blue-600">
-                                <div class="flex items-center space-x-2">
-                                    <!-- Edit -->
+                            <td class="px-4 py-2">{{ $loop->iteration + ($jadwals->currentPage() - 1) * $jadwals->perPage() }}</td>
+                            <td class="px-4 py-2 font-medium text-gray-900">{{ $jadwal->ruang->nama ?? '-' }}</td>
+                            <td class="px-4 py-2">{{ $jadwal->userAdmin->name ?? '-' }}</td>
+                            <td class="px-4 py-2">{{ $jadwal->nama_kegiatan }}</td>
+                            <td class="px-4 py-2">{{ $jadwal->fungsi }}</td>
+                            <td class="px-4 py-2">{{ $jadwal->tanggal }}</td>
+                            <td class="px-4 py-2">{{ $jadwal->jam_mulai }}</td>
+                            <td class="px-4 py-2">{{ $jadwal->jam_selesai }}</td>
+                            <td class="px-4 py-2 text-center">
+                                <div class="flex justify-center space-x-1">
                                     <a href="{{ route('jadwals.edit', $jadwal->id) }}"
-                                       class="inline-flex items-center px-3 py-1.5 bg-blue-500 text-white text-xs font-medium rounded hover:bg-blue-600 transition duration-150 ease-in-out">
+                                       class="px-2 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 transition">
                                         Edit
                                     </a>
-
-                                    <!-- Delete -->
                                     <form action="{{ route('jadwals.destroy', $jadwal->id) }}" method="POST" class="form-hapus">
                                         @csrf
                                         @method('DELETE')
                                         <button type="button"
-                                            class="inline-flex items-center px-3 py-1.5 bg-red-500 text-white text-xs font-medium rounded hover:bg-red-600 transition duration-150 ease-in-out btn-hapus">
+                                            class="px-2 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600 transition btn-hapus">
                                             Delete
                                         </button>
                                     </form>
                                 </div>
                             </td>
+                            <td class="px-4 py-2 text-center">
+                                <span class="{{ $jadwal->status['class'] }}">
+                                    {{ $jadwal->status['text'] }}
+                                </span>
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
+            
         </div>
 
        
