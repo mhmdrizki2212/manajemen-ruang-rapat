@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RuangController;
 use App\Http\Controllers\JadwalController;
-
+use App\Http\Controllers\RuangUserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,10 +54,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         return response()->json($ruang);
     });
     // web.php
-Route::get('/get-lantai/{gedung_id}', [RuangController::class, 'getLantai']);
-Route::get('/get-ruang/{gedung_id}/{lantai}', [RuangController::class, 'getRuang']);
-Route::get('/ruangs/{id}/history', [\App\Http\Controllers\HistoryController::class, 'index'])
-    ->name('ruangs.history');
+        Route::get('/get-lantai/{gedung_id}', [RuangController::class, 'getLantai']);
+        Route::get('/get-ruang/{gedung_id}/{lantai}', [RuangController::class, 'getRuang']);
+        Route::get('/ruangs/{id}/history', [\App\Http\Controllers\HistoryController::class, 'index'])
+            ->name('ruangs.history');
 
 
 
@@ -72,6 +72,11 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/user/jadwal', function () {
         return view('front.jadwal');
     })->name('user.jadwal');
+
+    Route::get('/ruang/zona1', [RuangUserController::class, 'zona1'])->name('ruang.zona1');
+    Route::get('/ruang/field', [RuangUserController::class, 'field'])->name('ruang.field');
+
+
 });
 
 

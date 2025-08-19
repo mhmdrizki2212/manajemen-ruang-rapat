@@ -94,7 +94,6 @@
         
             <!-- Logout -->
             <div class="px-4 py-6 border-t border-gray-200">
-                <div class="flex justify-center">
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" class="inline-flex items-center gap-2 text-sm font-semibold text-white bg-red-500 hover:bg-red-600 focus:ring-2 focus:ring-red-300 px-5 py-2 rounded-lg shadow-md transition duration-200">
@@ -104,7 +103,6 @@
                             Logout
                         </button>
                     </form>
-                </div>
                 <div class="text-center mt-6 text-[11px] text-gray-400 px-4">
                     © PT Pertamina Hulu Rokan Zona 1 2025.
                 </div>
@@ -124,7 +122,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                     <div class="stat-card bg-white rounded-xl shadow-sm p-6 transition-all duration-300">
                         <div class="flex items-center justify-between mb-4">
-                            <div class="text-sm font-medium text-gray-500">Total Users</div>
+                            <div class="text-sm font-medium text-gray-500">Total Ruang Terpakai Hari ini </div>
                             <div class="p-2 rounded-lg bg-blue-50">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#0073fe]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />

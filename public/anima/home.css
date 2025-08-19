@@ -1,0 +1,314 @@
+/* General Body Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #ffffff;
+    color: #1f2937; /* gray-800 */
+    margin: 0;
+    padding: 0;
+}
+
+/* Main Container */
+.main-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex-grow: 1;
+}
+
+/* Utility */
+.container {
+    width: 100%;
+    max-width: 1280px; /* Standard container width */
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.5rem; /* 24px */
+    padding-right: 1.5rem; /* 24px */
+    box-sizing: border-box;
+}
+
+.font-bold {
+    font-weight: 700;
+}
+
+/* Header */
+header {
+    background-color: rgba(121, 127, 141, 0); /* bg-gray-900 bg-opacity-70 */
+    color: #ffffff;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    position: absolute;
+    width: 100%;
+    top: 0;
+    z-index: 10;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo img {
+    height: 2rem; /* 32px */
+    width: 2rem; /* 32px */
+    margin-right: 0.5rem; /* 8px */
+}
+
+.logo-text {
+    font-size: 1.25rem; /* 20px */
+    font-weight: 700;
+    font-family: 'Work Sans', sans-serif;
+}
+
+nav {
+    display: none; /* Hidden on small screens */
+}
+
+@media (min-width: 768px) { /* md breakpoint */
+    nav {
+        display: flex;
+        align-items: center;
+    }
+}
+
+.nav-link {
+    color: #ffffff;
+    text-decoration: none;
+    margin-left: 2rem; /* 32px */
+}
+
+.nav-link:hover {
+    color: #f87171; /* red-400 */
+}
+
+.nav-link.active {
+    font-weight: 700;
+}
+
+.user-icons {
+    display: flex;
+    align-items: center;
+}
+
+.icon-link {
+    color: #ffffff;
+    margin-left: 1rem; /* 16px */
+}
+
+.icon-link:hover {
+    color: #f87171; /* red-400 */
+}
+
+.icon {
+    height: 1.5rem; /* 24px */
+    width: 1.5rem; /* 24px */
+}
+
+
+/* Hero Section */
+.hero-section {
+    height: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #ffffff;
+    background-image: url('../anima/latar.jpg');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-section h1 {
+    font-size: 2.25rem; /* 36px */
+    font-weight: 800; /* extrabold */
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    font-family: 'Work Sans', sans-serif;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+@media (min-width: 768px) { /* md breakpoint */
+    .hero-section h1 {
+        font-size: 3.75rem; /* 60px */
+    }
+}
+
+
+/* Pilihan Gedung Section */
+.pilihan-gedung {
+    padding-top: 4rem; /* 64px */
+    padding-bottom: 4rem; /* 64px */
+    background-color: #f9fafb; /* gray-50 */
+    text-align: center;
+}
+
+.pilihan-gedung h2 {
+    font-size: 1.875rem; /* 30px */
+    font-weight: 700;
+    margin-bottom: 2rem; /* 32px */
+    font-family: 'Work Sans', sans-serif;
+}
+
+.tombol-grup {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem; /* 24px */
+}
+
+.tombol {
+    background-color: #dc2626; /* red-600 */
+    color: #ffffff;
+    font-weight: 700;
+    padding: 0.75rem 2.5rem; /* 12px 40px */
+    border-radius: 9999px; /* rounded-full */
+    font-size: 1.125rem; /* 18px */
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.tombol:hover {
+    background-color: #b91c1c; /* red-700 */
+}
+
+
+/* Footer */
+footer {
+    background-color: #f3f4f6; /* gray-100 */
+    border-top: 1px solid #e5e7eb; /* gray-200 */
+    padding-top: 2rem; /* 32px */
+    padding-bottom: 2rem; /* 32px */
+    text-align: center;
+    color: #4b5563; /* gray-600 */
+}
+
+.footer-logo {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem; /* 24px */
+}
+
+.footer-logo img {
+    height: 3rem; /* 48px */
+}
+
+.info {
+    margin-bottom: 1.5rem; /* 24px */
+}
+
+.info p {
+    margin-bottom: 0.5rem;
+}
+
+.copyright {
+    border-top: 1px solid #d1d5db; /* gray-300 */
+    padding-top: 1.5rem; /* 24px */
+    font-size: 0.875rem; /* 14px */
+}
+
+.copyright .links {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.copyright a {
+    color: #4b5563; /* gray-600 */
+    text-decoration: none;
+}
+
+.copyright a:hover {
+    text-decoration: underline;
+}
+
+/* --- STYLES FOR DROPDOWN --- */
+.dropdown-container {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-menu {
+    position: absolute;
+    right: 10;
+    top: calc(100% + 10px); /* Jarak dropdown dari ikon */
+    background-color: rgba(43, 41, 41, 0.412);
+    color: #333;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    width: 150px;
+    z-index: 100;
+    overflow: hidden;
+    /* Animasi */
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.dropdown-menu.hidden {
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+}
+
+.dropdown-item {
+    display: block;
+    padding: 0.75rem 1rem;
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 0.9rem;
+}
+
+.dropdown-item:hover {
+    background-color: #f87171; /* Warna latar saat di-hover */
+}
+
+.dropdown-menu a,
+.dropdown-menu button {
+    display: block;
+    width: 100%;
+    padding: 10px 15px;
+    text-align: left;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.dropdown-menu a:hover,
+.dropdown-menu button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    background-color: #f87171; /* Warna latar saat di-hover */
+
+}
+
