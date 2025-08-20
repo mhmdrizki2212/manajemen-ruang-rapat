@@ -309,3 +309,67 @@ footer {
 .social-icons a:hover {
     color: #dc2626; /* red-600 */
 }
+
+/* --- STYLES FOR DROPDOWN --- */
+.dropdown-container {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-menu {
+    position: absolute;
+    right: 10;
+    top: calc(100% + 10px); /* Jarak dropdown dari ikon */
+    background-color: rgba(43, 41, 41, 0.412);
+    color: #333;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    width: 150px;
+    z-index: 100;
+    overflow: hidden;
+    /* Animasi */
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.dropdown-menu.hidden {
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+}
+
+.dropdown-item {
+    display: block;
+    padding: 0.75rem 1rem;
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 0.9rem;
+}
+
+.dropdown-item:hover {
+    background-color: #f87171; /* Warna latar saat di-hover */
+}
+
+.dropdown-menu a,
+.dropdown-menu button {
+    display: block;
+    width: 100%;
+    padding: 10px 15px;
+    text-align: left;
+    background: transparent;
+    border: none;
+    color: rgb(1, 1, 1);
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.dropdown-menu a:hover,
+.dropdown-menu button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    background-color: #f87171; /* Warna latar saat di-hover */
+
+}
+
+
