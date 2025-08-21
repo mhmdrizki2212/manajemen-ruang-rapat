@@ -172,6 +172,12 @@ header {
     display: flex;
     flex-direction: column;
     align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 25px;
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
 @media (min-width: 768px) {
@@ -352,23 +358,48 @@ footer {
     color: #000000 !important; /* Warna teks saat di-hover */
 }
 
-.dropdown-menu a,
-.dropdown-menu button {
-    display: block;
-    width: 100%;
-    padding: 10px 15px;
-    text-align: left;
-    background: transparent;
-    border: none;
-    color: rgb(2, 2, 2);
-    font-size: 14px;
-    cursor: pointer;
-    transition: background 0.2s;
+/* Modal background */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
 }
 
-.dropdown-menu a:hover,
-.dropdown-menu button:hover {
-    background: rgba(255, 255, 255, 0.2);
-    background-color: #f87171; /* Warna latar saat di-hover */
-
+/* Isi modal */
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
+
+/* Tombol kembali */
+.btn-kembali {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background: #d9534f;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-kembali:hover {
+  background: #c9302c;
+}
+
+/* Class hidden */
+.hidden {
+  display: none;
+}
+

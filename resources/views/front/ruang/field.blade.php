@@ -6,7 +6,7 @@
     <title>Daftar Ruangan Gedung Field - Pertamina Hulu Rokan</title>
     
     <!-- CSS eksternal -->
-    <link rel="stylesheet" href="{{ asset('anima/zona1.css') }}">
+    <link rel="stylesheet" href="{{ asset('anima/field.css') }}">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -88,8 +88,8 @@
                         <div class="ruangan-info">
                             <h2>{{ $ruang->nama }}</h2>
                             @if($ruang->status ?? false)
-                                <p class="status tersedia">Tersedia</p>
-                                <a href="/formpinjam/{{ $ruang->id }}" class="btn btn-tersedia">Pinjam</a>
+                                <!-- <p class="status tersedia">Tersedia</p> -->
+                                <a href="/formpinjam/{{ $ruang->id }}" class="btn btn-tersedia">Detail</a>
                             @else
                                 <p class="status tidak-tersedia">Tidak Tersedia</p>
                                 <a href="#" class="btn btn-tidak-tersedia disabled">Pinjam</a>
@@ -117,8 +117,8 @@
                         <div class="ruangan-info">
                             <h2>{{ $ruang->nama }}</h2>
                             @if($ruang->status ?? false)
-                                <p class="status tersedia">Tersedia</p>
-                                <a href="/formpinjam/{{ $ruang->id }}" class="btn btn-tersedia">Pinjam</a>
+                                <!-- <p class="status tersedia">Tersedia</p> -->
+                                <a href="/formpinjam/{{ $ruang->id }}" class="btn btn-tersedia">Detail</a>
                             @else
                                 <p class="status tidak-tersedia">Tidak Tersedia</p>
                                 <a href="#" class="btn btn-tidak-tersedia disabled">Pinjam</a>
@@ -156,6 +156,57 @@
             </div>
         </footer>
     </div>
+    
+    <!-- Popup Modal -->
+<div id="detailModal" class="modal hidden">
+  <div class="modal-content">
+    <h2>Detail Ruangan</h2>
+    <p>Konten detail ruangan bisa diletakkan di sini...</p>
+    <button id="closeModal" class="btn-kembali">Kembali</button>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const userMenuButton = document.getElementById('user-menu-button');
+    const userDropdown = document.getElementById('user-dropdown');
+
+    // --- Dropdown User ---
+    userMenuButton.addEventListener('click', function (event) {
+      event.stopPropagation();
+      userDropdown.classList.toggle('hidden');
+    });
+
+    window.addEventListener('click', function () {
+      if (!userDropdown.classList.contains('hidden')) {
+        userDropdown.classList.add('hidden');
+      }
+    });
+
+    // --- Modal Detail ---
+    const detailButtons = document.querySelectorAll('.btn-tersedia');
+    const modal = document.getElementById('detailModal');
+    const closeModal = document.getElementById('closeModal');
+
+    detailButtons.forEach(btn => {
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        modal.classList.remove('hidden');
+      });
+    });
+
+    closeModal.addEventListener('click', function () {
+      modal.classList.add('hidden');
+    });
+
+    // Tutup modal kalau klik di luar konten
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal) {
+        modal.classList.add('hidden');
+      }
+    });
+  });
+</script>
 
     <script>
     function openTab(evt, tabId) {
