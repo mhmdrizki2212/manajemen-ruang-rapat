@@ -94,6 +94,7 @@
         
             <!-- Logout -->
             <div class="px-4 py-6 border-t border-gray-200">
+                <div class="flex justify-center">
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" class="inline-flex items-center gap-2 text-sm font-semibold text-white bg-red-500 hover:bg-red-600 focus:ring-2 focus:ring-red-300 px-5 py-2 rounded-lg shadow-md transition duration-200">
@@ -103,6 +104,8 @@
                             Logout
                         </button>
                     </form>
+                </div>
+                
                 <div class="text-center mt-6 text-[11px] text-gray-400 px-4">
                     © PT Pertamina Hulu Rokan Zona 1 2025.
                 </div>
@@ -169,83 +172,90 @@
                             <button class="text-sm font-medium text-blue-500 hover:text-blue-700">View All</button>
                         </div>
                     </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                            <thead class="bg-gray-50">
+                                <tr class="text-gray-700 text-xs font-semibold uppercase tracking-wider">
+                                    <th class="px-4 py-3 text-left">No</th>
+                                    <th class="px-4 py-3 text-left">User</th>
+                                    <th class="px-4 py-3 text-left">Ruangan</th>
+                                    <th class="px-4 py-3 text-left">Kegiatan</th>
+                                    <th class="px-4 py-3 text-left">Fungsi</th>
+                                    <th class="px-4 py-3 text-left">Tanggal</th>
+                                    <th class="px-4 py-3 text-left">Jam</th>
+                                    <th class="px-4 py-3 text-left">Fasilitas</th>
+                                    <th class="px-4 py-3 text-left">Catatan</th>
+                                    <th class="px-4 py-3 text-center">Status</th>
+                                    <th class="px-4 py-3 text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200 text-sm">
+                                @forelse ($jadwals as $jadwal)
+                                    @php
+                                        $now = now();
+                                        $status = 'Belum Dimulai';
+                                        if ($now->between(\Carbon\Carbon::parse($jadwal->jam_mulai), \Carbon\Carbon::parse($jadwal->jam_selesai))) {
+                                            $status = 'Sedang Berlangsung';
+                                        } elseif ($now->greaterThan(\Carbon\Carbon::parse($jadwal->jam_selesai))) {
+                                            $status = 'Selesai';
+                                        }
+                                    @endphp
+                                    <tr>
+                                        <td class="px-4 py-2">{{ $loop->iteration + ($jadwals->currentPage() - 1) * $jadwals->perPage() }}</td>
+                                        <td class="px-4 py-2">{{ $jadwal->userAdmin->name ?? '-' }}</td>
+                                        <td class="px-4 py-2 font-medium text-gray-900">{{ $jadwal->ruang->nama ?? '-' }}</td>
+                                        <td class="px-4 py-2">{{ $jadwal->nama_kegiatan }}</td>
+                                        <td class="px-4 py-2">{{ $jadwal->fungsi }}</td>
+                                        <td class="px-4 py-2">{{ \Carbon\Carbon::parse($jadwal->tanggal)->format('d-m-Y') }}</td>
+                                        <td class="px-4 py-2">{{ $jadwal->jam_mulai }} - {{ $jadwal->jam_selesai }}</td>
+                                        <td class="px-4 py-2">{{ is_array($jadwal->fasilitas) ? implode(', ', $jadwal->fasilitas) : $jadwal->fasilitas }}</td>
+                                        <td class="px-4 py-2">{{ $jadwal->catatan_pelaksanaan ?? '-' }}</td>
+                                        <td class="px-4 py-2 text-center">
+                                            <span class="@if($status == 'Sedang Berlangsung') bg-blue-200 text-blue-800
+                                                         @elseif($status == 'Belum Dimulai') bg-yellow-200 text-yellow-800
+                                                         @else bg-green-200 text-green-800 @endif
+                                                         px-2 py-0.5 rounded-full text-xs font-medium">
+                                                {{ $status }}
+                                            </span>
+                                        </td>
+                                        <td class="px-4 py-2 text-center">
+                                            <div class="flex justify-center space-x-1">
+                                                <a href="{{ route('jadwals.edit', $jadwal->id) }}"
+                                                   class="px-2 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 transition">
+                                                    Edit
+                                                </a>
+                                                <form action="{{ route('jadwals.destroy', $jadwal->id) }}" method="POST" class="form-hapus">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="button"
+                                                        class="px-2 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600 transition btn-hapus">
+                                                        Delete
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="11" class="px-4 py-2 text-center text-gray-500">
+                                            Tidak ada jadwal hari ini.
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
                     
-<div class="overflow-x-auto">
-    <table class="min-w-full border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-        <thead class="bg-gray-50">
-            <tr class="text-gray-700 text-xs font-semibold uppercase tracking-wider">
-                <th class="px-4 py-3 text-left">No</th>
-                <th class="px-4 py-3 text-left">User</th>
-                <th class="px-4 py-3 text-left">Ruangan</th>
-                <th class="px-4 py-3 text-left">Fungsi</th>
-                <th class="px-4 py-3 text-left">Tanggal</th>
-                <th class="px-4 py-3 text-left">Jam Pelaksanaan</th>
-                <th class="px-4 py-3 text-center">Action</th>
-                <th class="px-4 py-3 text-center">Status</th>
-            </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200 text-sm">
-            @forelse ($jadwals as $jadwal)
-                <tr>
-                    <td class="px-4 py-2">
-                        {{ $loop->iteration + ($jadwals->currentPage() - 1) * $jadwals->perPage() }}
-                    </td>
-                    <td class="px-4 py-2">{{ $jadwal->userAdmin->name ?? '-' }}</td>
-                    <td class="px-4 py-2 font-medium text-gray-900">{{ $jadwal->ruang->nama ?? '-' }}</td>
-                    <td class="px-4 py-2">{{ $jadwal->fungsi }}</td>
-                    <td class="px-4 py-2">{{ \Carbon\Carbon::parse($jadwal->tanggal)->format('d-m-Y') }}</td>
-                    <td class="px-4 py-2">{{ $jadwal->jam_mulai }} -- {{ $jadwal->jam_selesai }}</td>
-                    <td class="px-4 py-2 text-center">
-                        @php
-                        $statusText = $jadwal->status['text'] ?? '';
-                    @endphp
-                    
-                    <span class="@if($jadwal->status == 'Sedang Berlangsung') bg-blue-200 text-blue-800
-                        @elseif($jadwal->status == 'Belum Dimulai') bg-yellow-200 text-yellow-800
-                        @else bg-green-200 text-green-800 @endif
-                        px-2 py-0.5 rounded-full text-xs font-medium">
-               {{ $jadwal->status ['text'] }}
-           </span>
-           
-                    
-                    </td>
-                    <td class="px-4 py-2 text-center">
-                        <div class="flex justify-center space-x-1">
-                            <a href="{{ route('jadwals.edit', $jadwal->id) }}"
-                               class="px-2 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 transition">
-                                Edit
-                            </a>
-                            <form action="{{ route('jadwals.destroy', $jadwal->id) }}" method="POST" class="form-hapus">
-                                @csrf
-                                @method('DELETE')
-                                <button type="button"
-                                    class="px-2 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600 transition btn-hapus">
-                                    Delete
-                                </button>
-                            </form>
+                        <!-- Pagination -->
+                        <div class="mt-4">
+                            {{ $jadwals->links() }}
                         </div>
-                    </td>
-
+                    </div>
                     
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="10" class="px-4 py-2 text-center text-gray-500">
-                        Tidak ada jadwal hari ini.
-                    </td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
-
-    <!-- Pagination -->
-    <div class="mt-4">
-        {{ $jadwals->links() }}
-    </div>
-</div>
 
                 
                 <!-- Recent Activity -->
+              <!--
                 <div class="bg-white rounded-xl shadow-sm overflow-hidden">
                     <div class="px-6 py-4 border-b border-gray-200">
                         <div class="flex items-center justify-between">
@@ -314,7 +324,9 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> 
+
+            -->
             </main>
         </div>
     </div>

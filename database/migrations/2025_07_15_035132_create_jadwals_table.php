@@ -15,11 +15,13 @@ return new class extends Migration
             $table->id();
             $table->foreignId('ruang_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_admin_id')->constrained('users')->onDelete('cascade');
+            $table->string('penanggung_jawab');
             $table->string('nama_kegiatan');
             $table->string('fungsi'); // divisi
+            $table->integer('jumlah_peserta'); // divisi
             $table->date('tanggal');
-            $table->time('jam_mulai');
-            $table->time('jam_selesai');
+            $table->string('fasilitas');
+            $table->string('catatan_pelaksanaan');
             $table->timestamps();
         });
     }

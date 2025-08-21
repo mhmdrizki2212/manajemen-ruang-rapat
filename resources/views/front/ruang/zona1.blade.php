@@ -31,8 +31,7 @@
                 <!-- Navigasi -->
                 <nav class="main-nav">
                     <a href="/">Beranda</a>
-                    <a href="#" class="active">Pesan Ruangan</a>
-                    <a href="/riwayat">Riwayat</a>
+                    <a href="#" class="active"> Lihat Jadwal </a>
                 </nav>
                 <!-- Ikon Pengguna -->
                 <div class="user-icons">
@@ -89,61 +88,86 @@
         {{-- Bagian Info Ruangan --}}
         <div class="ruangan-info">
             <h2>{{ $ruang->nama }}</h2>
+    
+            @php
+            // Jam kerja: 05:00 sampai 17:00
+            $startWork = \Carbon\Carbon::createFromTimeString('05:00:00');
+            $endWork = \Carbon\Carbon::createFromTimeString('17:00:00');
+    
+            // Ambil semua jadwal hari ini, urut berdasarkan jam_mulai
+            $jadwalsHariIni = $ruang->jadwals->sortBy('jam_mulai');
+    
+            // Inisialisasi array untuk slot kosong
+            $slotsKosong = [];
+            $prevEnd = $startWork;
+    
+            foreach ($jadwalsHariIni as $jadwal) {
+                $jamMulai = \Carbon\Carbon::parse($jadwal->jam_mulai);
+                $jamSelesai = \Carbon\Carbon::parse($jadwal->jam_selesai);
+    
+                // Batasi jam kerja
+                if ($jamMulai < $startWork) $jamMulai = $startWork;
+                if ($jamSelesai > $endWork) $jamSelesai = $endWork;
+    
+                // Jika ada celah antara jadwal sebelumnya dengan jadwal ini
+                if ($jamMulai > $prevEnd) {
+                    $slotsKosong[] = [
+                        'mulai' => $prevEnd->format('H:i'),
+                        'selesai' => $jamMulai->format('H:i')
+                    ];
+                }
+    
+                // Update prevEnd ke akhir jadwal saat ini
+                $prevEnd = $jamSelesai > $prevEnd ? $jamSelesai : $prevEnd;
+            }
+    
+            // Slot kosong terakhir sampai jam kerja berakhir
+            if ($prevEnd < $endWork) {
+                $slotsKosong[] = [
+                    'mulai' => $prevEnd->format('H:i'),
+                    'selesai' => $endWork->format('H:i')
+                ];
+            }
+    
+            // Hitung total durasi yang dipakai hari ini
+            $totalBookedMinutes = $jadwalsHariIni->sum(function($jadwal) use ($startWork, $endWork) {
+                $jamMulai = \Carbon\Carbon::parse($jadwal->jam_mulai);
+                $jamSelesai = \Carbon\Carbon::parse($jadwal->jam_selesai);
+    
+                if ($jamMulai < $startWork) $jamMulai = $startWork;
+                if ($jamSelesai > $endWork) $jamSelesai = $endWork;
+    
+                return $jamMulai->diffInMinutes($jamSelesai);
+            });
+    
+            $totalWorkMinutes = $startWork->diffInMinutes($endWork);
+            $isAvailable = $totalBookedMinutes < $totalWorkMinutes;
+            @endphp
 
-                        {{-- Bagian Jadwal Hari Ini --}}
-                        @if($ruang->jadwals->isNotEmpty())
-                        <div class="jadwal-list mt-2">
-                            <h3>Jadwal Hari Ini (05:00-17:00)</h3>
-                            <ul>
-                                @foreach($ruang->jadwals as $jadwal)
-                                    <li>
-                                        {{ \Carbon\Carbon::parse($jadwal->jam_mulai)->format('H:i') }} -
-                                        {{ \Carbon\Carbon::parse($jadwal->jam_selesai)->format('H:i') }}
-                                        : {{ $jadwal->nama_kegiatan }}
-                                        ({{ $jadwal->userAdmin->name ?? 'Unknown' }})
-                                    </li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @else
-                        <div class="jadwal-list mt-2">
-                            <p>Tidak ada jadwal hari ini. Ruang tersedia dari 05:00 sampai 17:00.</p>
-                        </div>
-                    @endif
-
-                    @php
-                    // Jam kerja: 05:00 sampai 17:00
-                    $startWork = \Carbon\Carbon::createFromTimeString('05:00:00');
-                    $endWork = \Carbon\Carbon::createFromTimeString('17:00:00');
-                
-                    // Hitung total durasi yang dipakai hari ini
-                    $totalBookedMinutes = $ruang->jadwals->sum(function($jadwal) use ($startWork, $endWork) {
-                        $jamMulai = \Carbon\Carbon::parse($jadwal->jam_mulai);
-                        $jamSelesai = \Carbon\Carbon::parse($jadwal->jam_selesai);
-                
-                        // Batasi durasi dalam jam kerja
-                        if ($jamMulai < $startWork) $jamMulai = $startWork;
-                        if ($jamSelesai > $endWork) $jamSelesai = $endWork;
-                
-                        return $jamMulai->diffInMinutes($jamSelesai);
-                    });
-                
-                    $totalWorkMinutes = $startWork->diffInMinutes($endWork);
-                    $isAvailable = $totalBookedMinutes < $totalWorkMinutes;
-                @endphp
-                
-                @if($isAvailable)
-                    <p class="status tersedia">Tersedia</p>
-                    <a href="/formpinjam/{{ $ruang->id }}" class="btn btn-tersedia">Pinjam</a>
+    
+            {{-- Tampilkan slot kosong --}}
+            <div class="jadwal-list mt-2">
+                <h3>Jadwal Kosong Hari Ini</h3>
+                @if(count($slotsKosong) > 0)
+                    <ul>
+                        @foreach($slotsKosong as $slot)
+                            <li>{{ $slot['mulai'] }} - {{ $slot['selesai'] }}</li>
+                        @endforeach
+                    </ul>
                 @else
-                    <p class="status tidak-tersedia">Tidak Tersedia</p>
-                    <a href="#" class="btn btn-tidak-tersedia disabled">Pinjam</a>
+                    <p>Tidak ada slot kosong. Ruang penuh hari ini.</p>
                 @endif
-                
-
-                </div>
+            </div>
+            @if($isAvailable)
+            <p class="status tersedia">Tersedia</p>
+            <a href="/formpinjam/{{ $ruang->id }}" class="btn btn-tersedia">Pinjam</a>
+        @else
+            <p class="status tidak-tersedia">Tidak Tersedia</p>
+            <a href="#" class="btn btn-tidak-tersedia disabled">Pinjam</a>
+        @endif
     
 
+        </div>
     
         {{-- Bagian Gambar Ruangan --}}
         <div class="ruangan-gambar">
@@ -170,7 +194,77 @@
             <div class="ruangan-info">
                 <h2>{{ $ruang->nama }}</h2>
 
-                @if($ruang->status ?? false)
+                @php
+                // Jam kerja: 05:00 sampai 17:00
+                $startWork = \Carbon\Carbon::createFromTimeString('05:00:00');
+                $endWork = \Carbon\Carbon::createFromTimeString('17:00:00');
+
+                // Ambil semua jadwal hari ini, urut berdasarkan jam_mulai
+                $jadwalsHariIni = $ruang->jadwals->sortBy('jam_mulai');
+
+                // Inisialisasi array untuk slot kosong
+                $slotsKosong = [];
+                $prevEnd = $startWork;
+
+                foreach ($jadwalsHariIni as $jadwal) {
+                    $jamMulai = \Carbon\Carbon::parse($jadwal->jam_mulai);
+                    $jamSelesai = \Carbon\Carbon::parse($jadwal->jam_selesai);
+
+                    // Batasi jam kerja
+                    if ($jamMulai < $startWork) $jamMulai = $startWork;
+                    if ($jamSelesai > $endWork) $jamSelesai = $endWork;
+
+                    // Jika ada celah antara jadwal sebelumnya dengan jadwal ini
+                    if ($jamMulai > $prevEnd) {
+                        $slotsKosong[] = [
+                            'mulai' => $prevEnd->format('H:i'),
+                            'selesai' => $jamMulai->format('H:i')
+                        ];
+                    }
+
+                    // Update prevEnd ke akhir jadwal saat ini
+                    $prevEnd = $jamSelesai > $prevEnd ? $jamSelesai : $prevEnd;
+                }
+
+                // Slot kosong terakhir sampai jam kerja berakhir
+                if ($prevEnd < $endWork) {
+                    $slotsKosong[] = [
+                        'mulai' => $prevEnd->format('H:i'),
+                        'selesai' => $endWork->format('H:i')
+                    ];
+                }
+
+                // Hitung total durasi yang dipakai hari ini
+                $totalBookedMinutes = $jadwalsHariIni->sum(function($jadwal) use ($startWork, $endWork) {
+                    $jamMulai = \Carbon\Carbon::parse($jadwal->jam_mulai);
+                    $jamSelesai = \Carbon\Carbon::parse($jadwal->jam_selesai);
+
+                    if ($jamMulai < $startWork) $jamMulai = $startWork;
+                    if ($jamSelesai > $endWork) $jamSelesai = $endWork;
+
+                    return $jamMulai->diffInMinutes($jamSelesai);
+                });
+
+                $totalWorkMinutes = $startWork->diffInMinutes($endWork);
+                $isAvailable = $totalBookedMinutes < $totalWorkMinutes;
+                @endphp
+
+                {{-- Tampilkan slot kosong --}}
+                <div class="jadwal-list mt-2">
+                    <h3>Jadwal Kosong Hari Ini</h3>
+                    @if(count($slotsKosong) > 0)
+                        <ul>
+                            @foreach($slotsKosong as $slot)
+                                <li>{{ $slot['mulai'] }} - {{ $slot['selesai'] }}</li>
+                            @endforeach
+                        </ul>
+                    @else
+                        <p>Tidak ada slot kosong. Ruang penuh hari ini.</p>
+                    @endif
+                </div>
+
+                {{-- Status dan tombol pinjam --}}
+                @if($isAvailable)
                     <p class="status tersedia">Tersedia</p>
                     <a href="/formpinjam/{{ $ruang->id }}" class="btn btn-tersedia">Pinjam</a>
                 @else

@@ -61,6 +61,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::get('/get-ruang/{gedung_id}/{lantai}', [RuangController::class, 'getRuang']);
         Route::get('/ruangs/{id}/history', [\App\Http\Controllers\HistoryController::class, 'index'])
             ->name('ruangs.history');
+        
+            Route::post('/jadwals/check', [App\Http\Controllers\JadwalController::class, 'checkJadwal'])->name('jadwals.check');
+
 
 
 
@@ -78,10 +81,6 @@ Route::middleware(['auth', 'role:user'])->group(function () {
 
     Route::get('/ruang/zona1', [RuangUserController::class, 'zona1'])->name('ruang.zona1');
     Route::get('/ruang/field', [RuangUserController::class, 'field'])->name('ruang.field');
-    Route::get('/jadwal/pinjam', [JadwalUserController::class, 'create'])->name('jadwal.create');
-    // Menyimpan data peminjaman
-    Route::post('/jadwal/pinjam', [JadwalUserController::class, 'store'])->name('jadwal.store');
-
 
 });
 

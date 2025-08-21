@@ -12,7 +12,6 @@ class AdminController extends Controller
 {
     public function index()
     {
-        $now = Carbon::now('Asia/Jakarta');
         $today = Carbon::today('Asia/Jakarta');
 
         // 🔹 Statistik User & Ruang
@@ -21,38 +20,31 @@ class AdminController extends Controller
         $totalRegularUsers = User::where('role', 'user')->count();
         $totalRuang = Ruang::count();
 
-        // 🔹 Total jadwal yang akan datang
-        $totalUpcomingJadwal = Jadwal::where(function ($query) use ($now) {
-                $query->whereDate('tanggal', $now->toDateString())
-                      ->whereTime('jam_mulai', '>', $now->toTimeString());
-            })
-            ->orWhereDate('tanggal', '>', $now->toDateString())
-            ->count();
+        // 🔹 Total jadwal yang akan datang (hanya lihat tanggal > hari ini)
+        $totalUpcomingJadwal = Jadwal::whereDate('tanggal', '>', $today)->count();
 
-        // 🔹 Ruang terpakai hari ini (sedang berlangsung)
+        // 🔹 Ruang terpakai hari ini (distinct by ruang_id)
         $totalRuangTerpakaiHariIni = Jadwal::whereDate('tanggal', $today)
-        ->distinct('ruang_id')
-        ->count('ruang_id');
-    
+            ->distinct('ruang_id')
+            ->count('ruang_id');
 
-        // 🔹 Data jadwal hari ini (pakai paginate supaya bisa di-blade dengan links())
+        // 🔹 Data jadwal hari ini
         $jadwals = Jadwal::with(['ruang', 'userAdmin'])
             ->whereDate('tanggal', $today)
-            ->orderBy('jam_mulai', 'asc')
-            ->paginate(10); // <= gunakan pagination
+            ->orderBy('tanggal', 'asc')
+            ->paginate(10);
 
-        // 🔹 Tambahkan kolom status (manual, tidak di DB)
-        $jadwals->getCollection()->transform(function ($jadwal) use ($now) {
-            if ($jadwal->jam_mulai <= $now->format('H:i:s') && $jadwal->jam_selesai >= $now->format('H:i:s')) {
+        // 🔹 Tambahkan kolom status (lebih sederhana, karena tanpa jam)
+        $jadwals->getCollection()->transform(function ($jadwal) use ($today) {
+            if ($jadwal->tanggal == $today->toDateString()) {
                 $jadwal->status = 'Sedang Berlangsung';
-            } elseif ($jadwal->jam_mulai > $now->format('H:i:s')) {
+            } elseif ($jadwal->tanggal > $today->toDateString()) {
                 $jadwal->status = 'Belum Dimulai';
             } else {
                 $jadwal->status = 'Selesai';
             }
             return $jadwal;
         });
-        
 
         // 🔹 Kirim ke view
         return view('back.home-admin', compact(

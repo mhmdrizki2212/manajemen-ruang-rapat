@@ -11,21 +11,18 @@ class RuangUserController extends Controller
     public function zona1()
     {
         $today = Carbon::today('Asia/Jakarta');
-        $startTime = '05:00:00';
-        $endTime = '17:00:00';
 
         $ruangs = Ruang::where('gedung_id', 1)
-            ->with(['jadwals' => function($query) use ($today, $startTime, $endTime) {
+            ->with(['jadwals' => function($query) use ($today) {
                 $query->whereDate('tanggal', $today)
-                      ->whereTime('jam_selesai', '>=', $startTime)
-                      ->whereTime('jam_mulai', '<=', $endTime)
-                      ->orderBy('jam_mulai', 'asc')
+                      ->orderBy('tanggal', 'asc')
                       ->with('userAdmin');
             }])
             ->get();
 
         foreach ($ruangs as $ruang) {
-            $ruang->status = $ruang->jadwals->isEmpty(); // true jika kosong
+            // jika jadwal kosong → ruangan tersedia
+            $ruang->status = $ruang->jadwals->isEmpty();
         }
 
         return view('front.ruang.zona1', compact('ruangs'));
@@ -34,21 +31,17 @@ class RuangUserController extends Controller
     public function field()
     {
         $today = Carbon::today('Asia/Jakarta');
-        $startTime = '05:00:00';
-        $endTime = '17:00:00';
 
         $ruangs = Ruang::where('gedung_id', 2)
-            ->with(['jadwals' => function($query) use ($today, $startTime, $endTime) {
+            ->with(['jadwals' => function($query) use ($today) {
                 $query->whereDate('tanggal', $today)
-                      ->whereTime('jam_selesai', '>=', $startTime)
-                      ->whereTime('jam_mulai', '<=', $endTime)
-                      ->orderBy('jam_mulai', 'asc')
+                      ->orderBy('tanggal', 'asc')
                       ->with('userAdmin');
             }])
             ->get();
 
         foreach ($ruangs as $ruang) {
-            $ruang->status = $ruang->jadwals->isEmpty(); // true jika kosong
+            $ruang->status = $ruang->jadwals->isEmpty();
         }
 
         return view('front.ruang.field', compact('ruangs'));

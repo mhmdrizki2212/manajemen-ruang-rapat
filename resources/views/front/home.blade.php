@@ -36,8 +36,7 @@
                 <!-- Navigasi -->
                 <nav>
                     <a href="/" class="nav-link active">Beranda</a>
-                    <a href="#zona1" class="nav-link">Pesan Ruangan</a>
-                    <a href="/riwayat" class="nav-link">Riwayat</a>
+                    <a href="#zona1" class="nav-link"> Lihat Jadwal </a>
                 </nav>
                 <!-- Ikon Pengguna -->
                 <div class="user-icons">
@@ -82,7 +81,9 @@
             <section class="hero-section">
                 <div class="hero-content container">
                     <h1>
-                        SELAMAT DATANG DI PT PERTAMINA HULU ROKAN ZONA 1 FIELD JAMBI
+                        SELAMAT DATANG <br>
+                        DI SISTEM MANAJEMEN RUANG RAPAT <br>
+                        PT PERTAMINA HULU ROKAN ZONA 1 
                     </h1>
                 </div>
             </section>
@@ -93,10 +94,10 @@
                     <h2>Pilih Gedung</h2>
                     <div class="tombol-grup">
                         <a href="{{ route('ruang.zona1') }}" class="tombol">
-                            Gedung Zona 1
+                            Gedung Zona 1        
                         </a>
                         <a href="{{ route('ruang.field') }}" class="tombol">
-                            Gedung Field
+                            EP Field Jambi
                         </a>
                     </div>
                 </div>

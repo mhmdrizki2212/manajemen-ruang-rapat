@@ -30,8 +30,7 @@
                 <!-- Navigasi -->
                 <nav class="main-nav">
                     <a href="/">Beranda</a>
-                    <a href="#" class="active">Pesan Ruangan</a>
-                    <a href="/riwayat">Riwayat</a>
+                    <a href="#" class="active">Lihat Jadwal</a>
                 </nav>
                 <!-- Ikon Pengguna -->
                 <div class="user-icons">

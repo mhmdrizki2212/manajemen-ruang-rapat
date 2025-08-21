@@ -4,26 +4,28 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Ruang;
-use Carbon\Carbon;
 
 class HistoryController extends Controller
 {
     /**
-     * Menampilkan daftar jadwal yang sudah lewat.
+     * Menampilkan daftar jadwal yang sudah lewat berdasarkan ruang.
      */
     public function index($ruangId)
     {
-        // Ambil data ruang berdasarkan ID
+        $today = now()->toDateString();
+        $currentTime = now()->toTimeString();
+
+        // Ambil data ruang
         $ruang = Ruang::findOrFail($ruangId);
 
-        // Ambil jadwal yang sudah lewat
+        // Ambil history jadwal (sudah lewat hari atau jam mulai lewat hari ini)
         $history = $ruang->jadwals()
-            ->with('userAdmin') // relasi ke user admin
-            ->where(function ($query) {
-                $query->whereDate('tanggal', '<', now()->toDateString()) // Sudah lewat harinya
-                      ->orWhere(function ($query) {
-                          $query->whereDate('tanggal', now()->toDateString()) // Hari ini
-                                ->whereTime('jam_mulai', '<', now()->toTimeString()); // Jam mulai sudah lewat
+            ->with(['userAdmin', 'ruang']) // kalau perlu info ruang juga
+            ->where(function ($query) use ($today, $currentTime) {
+                $query->whereDate('tanggal', '<', $today) // jadwal sebelum hari ini
+                      ->orWhere(function ($q) use ($today, $currentTime) {
+                          $q->whereDate('tanggal', $today)
+                            ->whereTime('jam_mulai', '<', $currentTime);
                       });
             })
             ->orderBy('tanggal', 'desc')

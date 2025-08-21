@@ -159,58 +159,73 @@
 
         <div class="overflow-x-auto">
             <table class="min-w-full border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-                <thead class="bg-gray-50">
+                <thead class="bg-gray-100">
                     <tr class="text-gray-700 text-xs font-semibold uppercase tracking-wider">
                         <th class="px-4 py-3 text-left">No</th>
                         <th class="px-4 py-3 text-left">Ruangan</th>
-                        <th class="px-4 py-3 text-left">User</th>
+                        <th class="px-4 py-3 text-left">Penanggung Jawab</th>
                         <th class="px-4 py-3 text-left">Kegiatan</th>
                         <th class="px-4 py-3 text-left">Fungsi</th>
+                        <th class="px-4 py-3 text-left">Peserta</th>
                         <th class="px-4 py-3 text-left">Tanggal</th>
-                        <th class="px-4 py-3 text-left">Mulai</th>
-                        <th class="px-4 py-3 text-left">Selesai</th>
+                        <th class="px-4 py-3 text-left">Fasilitas</th>
+                        <th class="px-4 py-3 text-left">Catatan</th>
                         <th class="px-4 py-3 text-center">Action</th>
-                        <th class="px-4 py-3 text-center">Status</th>
                     </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-gray-200 text-sm">
+                <tbody class="text-sm">
                     @foreach ($jadwals as $jadwal)
-                        <tr>
-                            <td class="px-4 py-2">{{ $loop->iteration + ($jadwals->currentPage() - 1) * $jadwals->perPage() }}</td>
-                            <td class="px-4 py-2 font-medium text-gray-900">{{ $jadwal->ruang->nama ?? '-' }}</td>
-                            <td class="px-4 py-2">{{ $jadwal->userAdmin->name ?? '-' }}</td>
+                        <tr class="odd:bg-white even:bg-gray-50 hover:bg-gray-100 transition">
+                            <td class="px-4 py-2">
+                                {{ $loop->iteration + ($jadwals->currentPage() - 1) * $jadwals->perPage() }}
+                            </td>
+                            <td class="px-4 py-2 font-medium text-gray-900">
+                                {{ $jadwal->ruang->nama ?? '-' }}
+                            </td>
+                            <td class="px-4 py-2">{{ $jadwal->penanggung_jawab }}</td>
                             <td class="px-4 py-2">{{ $jadwal->nama_kegiatan }}</td>
                             <td class="px-4 py-2">{{ $jadwal->fungsi }}</td>
-                            <td class="px-4 py-2">{{ $jadwal->tanggal }}</td>
-                            <td class="px-4 py-2">{{ $jadwal->jam_mulai }}</td>
-                            <td class="px-4 py-2">{{ $jadwal->jam_selesai }}</td>
+                            <td class="px-4 py-2">{{ $jadwal->jumlah_peserta }}</td>
+                            <td class="px-4 py-2">{{ \Carbon\Carbon::parse($jadwal->tanggal)->format('d M Y') }}</td>
+                            <td class="px-4 py-2">
+                                @if ($jadwal->fasilitas)
+                                    @foreach (is_array($jadwal->fasilitas) ? $jadwal->fasilitas : json_decode($jadwal->fasilitas, true) as $item)
+                                        <span class="inline-block px-2 py-1 text-xs rounded bg-blue-100 text-blue-700 mr-1 mb-1">
+                                            {{ $item }}
+                                        </span>
+                                    @endforeach
+                                @else
+                                    <span class="text-gray-400 text-xs">-</span>
+                                @endif
+                            </td>
+                            <td class="px-4 py-2">{{ $jadwal->catatan_pelaksanaan ?? '-' }}</td>
                             <td class="px-4 py-2 text-center">
-                                <div class="flex justify-center space-x-1">
+                                <div class="flex justify-center space-x-2">
                                     <a href="{{ route('jadwals.edit', $jadwal->id) }}"
-                                       class="px-2 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 transition">
-                                        Edit
+                                       class="px-2 py-1 bg-blue-500 text-white text-xs rounded-lg hover:bg-blue-600 transition">
+                                        ✏️ Edit
                                     </a>
                                     <form action="{{ route('jadwals.destroy', $jadwal->id) }}" method="POST" class="form-hapus">
                                         @csrf
                                         @method('DELETE')
                                         <button type="button"
-                                            class="px-2 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600 transition btn-hapus">
-                                            Delete
+                                            class="px-2 py-1 bg-red-500 text-white text-xs rounded-lg hover:bg-red-600 transition btn-hapus">
+                                            🗑️ Hapus
                                         </button>
                                     </form>
                                 </div>
-                            </td>
-                            <td class="px-4 py-2 text-center">
-                                <span class="{{ $jadwal->status['class'] }}">
-                                    {{ $jadwal->status['text'] }}
-                                </span>
                             </td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
-            
         </div>
+        
+        <!-- Pagination -->
+        <div class="mt-4 px-6">
+            {{ $jadwals->links() }}
+        </div>
+        
 
        
     </div>
