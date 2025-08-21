@@ -13,23 +13,15 @@ class HistoryController extends Controller
     public function index($ruangId)
     {
         $today = now()->toDateString();
-        $currentTime = now()->toTimeString();
 
         // Ambil data ruang
         $ruang = Ruang::findOrFail($ruangId);
 
-        // Ambil history jadwal (sudah lewat hari atau jam mulai lewat hari ini)
+        // Ambil history jadwal (semua jadwal sebelum hari ini)
         $history = $ruang->jadwals()
-            ->with(['userAdmin', 'ruang']) // kalau perlu info ruang juga
-            ->where(function ($query) use ($today, $currentTime) {
-                $query->whereDate('tanggal', '<', $today) // jadwal sebelum hari ini
-                      ->orWhere(function ($q) use ($today, $currentTime) {
-                          $q->whereDate('tanggal', $today)
-                            ->whereTime('jam_mulai', '<', $currentTime);
-                      });
-            })
+            ->with(['userAdmin', 'ruang']) // relasi tambahan jika perlu
+            ->whereDate('tanggal', '<', $today)
             ->orderBy('tanggal', 'desc')
-            ->orderBy('jam_mulai', 'desc')
             ->get();
 
         return view('back.ruang.history', compact('ruang', 'history'));

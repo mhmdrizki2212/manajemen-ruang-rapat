@@ -140,7 +140,8 @@
         <!-- Main Content -->
         <div class="flex-1 overflow-auto px-6 py-8 bg-gray-50 min-h-screen">
             <div class="max-w-2xl mx-auto">
-                <div class="bg-white shadow-lg rounded-2xl p-8">
+    
+            </div>            <div class="bg-white shadow-lg rounded-2xl p-8">
                     <!-- Header -->
                     <div class="text-center mb-8">
                         <h1 class="text-2xl font-bold text-gray-800">Form Peminjaman Ruang</h1>
@@ -148,7 +149,7 @@
                     </div>
 
                     <!-- Form -->
-                    <form id="jadwalForm" action="{{ route('jadwals.store') }}" method="POST" class="space-y-6">
+                 <form id="jadwalForm" action="{{ route('jadwals.store') }}" method="POST" class="space-y-6">
                         @csrf
 
                         <!-- Nama User -->
@@ -292,7 +293,6 @@
                     </div>
                     @endif
                 </div>
-            </div>
 
         </div>
 

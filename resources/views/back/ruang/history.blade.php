@@ -143,7 +143,6 @@
                 <th class="px-4 py-2 border">Tanggal</th>
                 <th class="px-4 py-2 border">Ruang</th>
                 <th class="px-4 py-2 border">Peminjam</th>
-                <th class="px-4 py-2 border">Waktu Penggunaan</th>
                 <th class="px-4 py-2 border">Nama Kegiatan</th>
                 <th class="px-4 py-2 border">Fungsi</th>
             </tr>
@@ -160,9 +159,7 @@
                     <td class="px-4 py-2 border">
                         {{ $item->dmin->name ?? 'Tidak Diketahui' }}
                     </td>
-                    <td class="px-4 py-2 border">
-                        {{ $item->jam_mulai }} - {{ $item->jam_selesai }}
-                    </td>
+
                     <td class="px-4 py-2 border">
                         {{ $item->nama_kegiatan }}
                     </td>

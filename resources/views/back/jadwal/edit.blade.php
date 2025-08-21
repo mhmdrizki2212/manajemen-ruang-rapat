@@ -122,91 +122,106 @@
                 <h2 class="text-3xl font-bold text-gray-800 mb-8 border-b pb-4">
                     Edit Jadwal
                 </h2>
-                <form action="{{ route('jadwals.update', $jadwal->id) }}" method="POST" class="space-y-6">
+                <form id="jadwalForm" action="{{ route('jadwals.update', $jadwal->id) }}" method="POST" class="space-y-6">
                     @csrf
                     @method('PUT')
                 
                     <!-- Nama User -->
                     <div class="md:col-span-2">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Nama User</label>
-                        <input type="text" value="{{ Auth::user()->name }}" readonly
+                        <input type="text" value="{{ $jadwal->user->name ?? Auth::user()->name }}" readonly
                             class="w-full px-4 py-2 border border-gray-300 bg-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-200" />
-                        <input type="hidden" name="user_admin_id" value="{{ Auth::id() }}">
+                        <input type="hidden" name="user_admin_id" value="{{ $jadwal->user_admin_id ?? Auth::id() }}">
                     </div>
                 
-                    <!-- Nama Kegiatan -->
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Nama Kegiatan</label>
-                        <input type="text" name="nama_kegiatan" value="{{ old('nama_kegiatan', $jadwal->nama_kegiatan) }}" required
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-200" />
-                        @error('nama_kegiatan')
+                    <!-- Pilih Ruangan -->
+                    <div>
+                        <label for="ruang_id" class="block text-sm font-medium text-gray-700 mb-1">Pilih Ruangan</label>
+                        <select id="ruang_id" name="ruang_id" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-200">
+                            <option value="" disabled>-- Pilih Ruangan --</option>
+                            @foreach($ruangs as $ruang)
+                                <option value="{{ $ruang->id }}" {{ $jadwal->ruang_id == $ruang->id ? 'selected' : '' }}>
+                                    {{ $ruang->nama }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('ruang_id')
                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                         @enderror
                     </div>
                 
-                    <!-- Fungsi -->
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Fungsi</label>
-                        <input type="text" name="fungsi" value="{{ old('fungsi', $jadwal->fungsi) }}"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-200" />
-                    </div>
-                
-                    <!-- Tanggal, Jam Mulai, Jam Selesai -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:col-span-2">
-                        <div>
-                            <label for="tanggal" class="block text-sm font-medium text-gray-700 mb-1">Tanggal</label>
-                            <input type="date" id="tanggal" name="tanggal"
-                                value="{{ old('tanggal', $jadwal->tanggal) }}" required
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-200">
-                        </div>
-                        <div>
-                            <label for="jam_mulai" class="block text-sm font-medium text-gray-700 mb-1">Jam Mulai</label>
-                            <input type="time" id="jam_mulai" name="jam_mulai" value="{{ old('jam_mulai', $jadwal->jam_mulai) }}" required
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-200">
-                        </div>
-                        <div>
-                            <label for="jam_selesai" class="block text-sm font-medium text-gray-700 mb-1">Jam Selesai</label>
-                            <input type="time" id="jam_selesai" name="jam_selesai" value="{{ old('jam_selesai', $jadwal->jam_selesai) }}" required
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-200">
-                        </div>
-                    </div>
-                
-                    <!-- Pilih Gedung -->
+                    <!-- Penanggung Jawab -->
                     <div>
-                        <label for="gedung" class="block text-sm font-medium text-gray-700 mb-1">Pilih Gedung</label>
-                        <select id="gedung" name="gedung_id" required
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-200">
-                            <option value="">-- Pilih Gedung --</option>
-                            @foreach($gedungs as $gedung)
-                                <option value="{{ $gedung->id }}" {{ old('gedung_id', $jadwal->ruang->gedung_id) == $gedung->id ? 'selected' : '' }}>
-                                    {{ $gedung->nama }}
-                                </option>
-                            @endforeach
-                        </select>
+                        <label for="penanggung_jawab" class="block text-sm font-medium text-gray-700 mb-1">Penanggung Jawab</label>
+                        <input type="text" id="penanggung_jawab" name="penanggung_jawab"
+                            value="{{ old('penanggung_jawab', $jadwal->penanggung_jawab) }}" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-200">
                     </div>
                 
-                    <!-- Pilih Lantai -->
+                    <!-- Nama Kegiatan -->
                     <div>
-                        <label for="lantai" class="block text-sm font-medium text-gray-700 mb-1">Pilih Lantai</label>
-                        <select id="lantai" name="lantai" required
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-200">
-                            <option value="{{ $jadwal->ruang->lantai }}" selected>{{ $jadwal->ruang->lantai }}</option>
-                        </select>
+                        <label for="nama_kegiatan" class="block text-sm font-medium text-gray-700 mb-1">Nama Kegiatan</label>
+                        <input type="text" id="nama_kegiatan" name="nama_kegiatan"
+                            value="{{ old('nama_kegiatan', $jadwal->nama_kegiatan) }}" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-200">
                     </div>
                 
-                    <!-- Pilih Ruang -->
-                    <div class="md:col-span-2">
-                        <label for="ruang" class="block text-sm font-medium text-gray-700 mb-1">Pilih Ruang</label>
-                        <select id="ruang" name="ruang_id" required
+                    <!-- Fungsi / Divisi -->
+                    <div>
+                        <label for="fungsi" class="block text-sm font-medium text-gray-700 mb-1">Fungsi / Divisi</label>
+                        <input type="text" id="fungsi" name="fungsi"
+                            value="{{ old('fungsi', $jadwal->fungsi) }}" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-200">
+                    </div>
+                
+                    <!-- Jumlah Peserta -->
+                    <div>
+                        <label for="jumlah_peserta" class="block text-sm font-medium text-gray-700 mb-1">Jumlah Peserta</label>
+                        <input type="number" id="jumlah_peserta" name="jumlah_peserta"
+                            value="{{ old('jumlah_peserta', $jadwal->jumlah_peserta) }}" min="1" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-200">
+                    </div>
+                
+                    <!-- Tanggal -->
+                    <div>
+                        <label for="tanggal" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Penggunaan</label>
+                        <input type="date" id="tanggal" name="tanggal"
+                            value="{{ old('tanggal', $jadwal->tanggal) }}"
+                            min="{{ date('Y-m-d') }}" required
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-200">
-                            <option value="{{ $jadwal->ruang->id }}" selected>{{ $jadwal->ruang->nama }}</option>
-                        </select>
+                    </div>
+                
+                    <!-- Fasilitas -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Fasilitas</label>
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="checkbox" name="fasilitas[]" value="Class Room Fasilitas Tambahan"
+                                    class="mr-2"
+                                    {{ in_array('Class Room Fasilitas Tambahan', old('fasilitas', $jadwal->fasilitas ?? [])) ? 'checked' : '' }}>
+                                Class Room Fasilitas Tambahan
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="fasilitas[]" value="Infocus & Screen"
+                                    class="mr-2"
+                                    {{ in_array('Infocus & Screen', old('fasilitas', $jadwal->fasilitas ?? [])) ? 'checked' : '' }}>
+                                Infocus & Screen
+                            </label>
+                        </div>
+                    </div>
+                
+                    <!-- Catatan -->
+                    <div>
+                        <label for="catatan_pelaksanaan" class="block text-sm font-medium text-gray-700 mb-1">Catatan Pelaksanaan</label>
+                        <textarea id="catatan_pelaksanaan" name="catatan_pelaksanaan" rows="2"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-200">{{ old('catatan_pelaksanaan', $jadwal->catatan_pelaksanaan) }}</textarea>
                     </div>
                 
                     <!-- Tombol -->
-                    <div class="flex justify-end mt-8 space-x-4">
+                    <div class="flex justify-end space-x-4 pt-4 border-t">
                         <a href="{{ route('jadwals.index') }}"
-                            class="inline-flex items-center px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium rounded-lg shadow-sm transition duration-200">
+                            class="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium rounded-lg shadow-sm transition duration-200">
                             ← Kembali
                         </a>
                         <button type="submit"
@@ -216,8 +231,13 @@
                     </div>
                 </form>
                 
+
+  
+ 
                 
                 
+            
+            
             </div>
         </div>
 
