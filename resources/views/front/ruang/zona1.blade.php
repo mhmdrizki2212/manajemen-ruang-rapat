@@ -88,6 +88,9 @@
         {{-- Bagian Info Ruangan --}}
         <div class="ruangan-info">
             <h2>{{ $ruang->nama }}</h2>
+            <ul>
+                <li>tes</li>
+            </ul>
     
             @php
             // Jam kerja: 05:00 sampai 17:00
