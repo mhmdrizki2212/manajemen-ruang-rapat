@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modern Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
     <style>
         :root {
             --primary-red: #fd0017;
@@ -325,11 +327,74 @@
                         </div>
                     </div>
                 </div> 
-
             -->
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                <!-- Grafik 1: Line Chart Pemakaian Ruangan -->
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h2 class="text-lg font-bold mb-4">📈 Pemakaian Ruangan</h2>
+                    <div id="chartPemakaian"></div>
+                </div>
+            
+                <!-- Grafik 2: Bar Chart Total Peserta -->
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h2 class="text-lg font-bold mb-4">👥 Total Peserta per Ruangan</h2>
+                    <div id="chartPeserta"></div>
+                </div>
+            </div>
+
             </main>
         </div>
     </div>
+
+    
+    <script>
+        // 🔹 Grafik Line Chart (Pemakaian Ruangan)
+        var optionsPemakaian = {
+            chart: {
+                type: 'line',
+                height: 350
+            },
+            series: [{
+                name: 'Jumlah Pemakaian',
+                data: @json($chartPemakaian)
+            }],
+            xaxis: {
+                categories: @json($chartLabels)
+            },
+            stroke: {
+                curve: 'smooth'
+            },
+            title: {
+                text: 'Frekuensi Pemakaian Ruangan',
+                align: 'center'
+            }
+        };
+        var chartPemakaian = new ApexCharts(document.querySelector("#chartPemakaian"), optionsPemakaian);
+        chartPemakaian.render();
+    
+        // 🔹 Grafik Bar Chart (Total Peserta)
+        var optionsPeserta = {
+            chart: {
+                type: 'bar',
+                height: 350
+            },
+            series: [{
+                name: 'Total Peserta',
+                data: @json($chartPeserta)
+            }],
+            xaxis: {
+                categories: @json($chartLabels)
+            },
+            title: {
+                text: 'Total Peserta Rapat per Ruangan',
+                align: 'center'
+            }
+        };
+        var chartPeserta = new ApexCharts(document.querySelector("#chartPeserta"), optionsPeserta);
+        chartPeserta.render();
+    </script>
+    
 
     <script>
         // Mobile sidebar toggle

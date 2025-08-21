@@ -20,10 +20,10 @@ class AdminController extends Controller
         $totalRegularUsers = User::where('role', 'user')->count();
         $totalRuang = Ruang::count();
 
-        // 🔹 Total jadwal yang akan datang (hanya lihat tanggal > hari ini)
+        // 🔹 Total jadwal yang akan datang
         $totalUpcomingJadwal = Jadwal::whereDate('tanggal', '>', $today)->count();
 
-        // 🔹 Ruang terpakai hari ini (distinct by ruang_id)
+        // 🔹 Ruang terpakai hari ini
         $totalRuangTerpakaiHariIni = Jadwal::whereDate('tanggal', $today)
             ->distinct('ruang_id')
             ->count('ruang_id');
@@ -34,7 +34,6 @@ class AdminController extends Controller
             ->orderBy('tanggal', 'asc')
             ->paginate(10);
 
-        // 🔹 Tambahkan kolom status (lebih sederhana, karena tanpa jam)
         $jadwals->getCollection()->transform(function ($jadwal) use ($today) {
             if ($jadwal->tanggal == $today->toDateString()) {
                 $jadwal->status = 'Sedang Berlangsung';
@@ -46,7 +45,23 @@ class AdminController extends Controller
             return $jadwal;
         });
 
-        // 🔹 Kirim ke view
+        // 🔹 Data grafik (semua ruangan)
+        $ruangan = Ruang::all();
+
+        $chartLabels = [];
+        $chartPemakaian = []; // jumlah jadwal
+        $chartPeserta = [];   // jumlah peserta rapat
+
+        foreach ($ruangan as $r) {
+            $chartLabels[] = $r->nama;
+
+            // Hitung berapa kali ruangan dipakai
+            $chartPemakaian[] = Jadwal::where('ruang_id', $r->id)->count();
+
+            // Hitung total peserta rapat di ruangan tsb
+            $chartPeserta[] = Jadwal::where('ruang_id', $r->id)->sum('jumlah_peserta');
+        }
+
         return view('back.home-admin', compact(
             'totalUsers',
             'totalAdmins',
@@ -54,7 +69,10 @@ class AdminController extends Controller
             'totalRuang',
             'totalUpcomingJadwal',
             'totalRuangTerpakaiHariIni',
-            'jadwals'
+            'jadwals',
+            'chartLabels',
+            'chartPemakaian',
+            'chartPeserta'
         ));
     }
 }

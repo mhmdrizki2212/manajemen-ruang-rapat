@@ -9,6 +9,7 @@ use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\RuangUserController;
 use App\Http\Controllers\JadwalUserController;
 
+
 /*
 |--------------------------------------------------------------------------
 | Public Routes
@@ -48,6 +49,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('ruangs', RuangController::class);
     Route::resource('jadwals', JadwalController::class);
     Route::get('/check-jadwal', [JadwalController::class, 'checkJadwal']);
+
 
 
     Route::get('/get-ruangs/{gedungId}', [JadwalController::class, 'getRuangs']);
