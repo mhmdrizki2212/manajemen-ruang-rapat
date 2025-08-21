@@ -258,9 +258,9 @@ footer {
 
 .dropdown-menu {
     position: absolute;
-    right: 10;
+    right: 0;
     top: calc(100% + 10px); /* Jarak dropdown dari ikon */
-    background-color: rgba(43, 41, 41, 0.412);
+    background-color: rgba(255, 255, 255, 0.153);
     color: #333;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -283,32 +283,18 @@ footer {
     display: block;
     padding: 0.75rem 1rem;
     text-decoration: none;
-    color: #ffffff;
+    color: #ffffff; /* Warna teks awal menjadi hitam */
     font-size: 0.9rem;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    /* Menambahkan font family agar konsisten */
+    font-family: 'Poppins', sans-serif; 
 }
 
 .dropdown-item:hover {
     background-color: #f87171; /* Warna latar saat di-hover */
+    color: #000000 !important; /* Warna teks tetap hitam saat di-hover */
 }
-
-.dropdown-menu a,
-.dropdown-menu button {
-    display: block;
-    width: 100%;
-    padding: 10px 15px;
-    text-align: left;
-    background: transparent;
-    border: none;
-    color: white;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.dropdown-menu a:hover,
-.dropdown-menu button:hover {
-    background: rgba(255, 255, 255, 0.2);
-    background-color: #f87171; /* Warna latar saat di-hover */
-
-}
-

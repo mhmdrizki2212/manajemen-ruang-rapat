@@ -20,55 +20,38 @@
     <div class="main-container">
 
         <!-- Header -->
-        <header>
-            <div class="container header-inner">
-                <!-- Logo -->
-                <div class="logo">
-                    <!-- Ganti dengan path logo Anda -->
-                    <a href="/"><img src="{{ asset('anima/logo.png') }}" alt="Logo Pertamina"></a>
-                   <!-- <span class="logo-text">Pertamina Hulu Rokan</span> -->
-                </div>
-                <!-- Navigasi -->
-                <nav class="main-nav">
-                    <a href="/">Beranda</a>
-                    <a href="#" class="active"> Lihat Jadwal </a>
-                </nav>
-                <!-- Ikon Pengguna -->
-                <div class="user-icons">
+    <header>
+        <div class="container header-inner">
+            <div class="logo">
+                <img src="{{ asset('anima/logo.png') }}" alt="Logo Pertamina">
+                <!--<span class="logo-text">Pertamina Jambi</span> -->
+            </div>
+            <nav class="main-nav">
+                <a href="/">Beranda</a>
+                <a href="/#zona1" class="active">Pesan Ruangan</a>
+                <a href="/riwayat">Riwayat</a>
+            </nav>
+            <div class="user-icons">
                     <a href="#" class="icon-link">
                         <!-- Ikon Notifikasi -->
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                            </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
                     </a>
                     <!-- Dropdown Container -->
                     <div class="dropdown-container">
                         <a href="#" class="icon-link" id="user-menu-button">
                             <!-- Ikon Pengguna -->
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z" />
-                                </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                         </a>
                         <!-- Dropdown Menu -->
                         <div id="user-dropdown" class="dropdown-menu hidden">
                             <a href="/profile" class="dropdown-item">Profile</a>
-                            <!-- Logout -->
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit" class="dropdown-item w-full text-left">
-                                    Logout
-                                </button>
-                            </form>
+                            <a href="/logout" class="dropdown-item">Logout</a>
                         </div>
                     </div>
                 </div>
-            </div>
-        </header>
-
+        </div>
+    </header>
+    
         <!-- Main Content -->
         <main class="container">
             <h1 class="main-title">Daftar Ruangan Gedung Zona 1</h1>
@@ -88,10 +71,7 @@
         {{-- Bagian Info Ruangan --}}
         <div class="ruangan-info">
             <h2>{{ $ruang->nama }}</h2>
-            <ul>
-                <li>tes</li>
-            </ul>
-    
+
             @php
             // Jam kerja: 05:00 sampai 17:00
             $startWork = \Carbon\Carbon::createFromTimeString('05:00:00');
@@ -154,7 +134,7 @@
                 @if(count($slotsKosong) > 0)
                     <ul>
                         @foreach($slotsKosong as $slot)
-                            <li>{{ $slot['mulai'] }} - {{ $slot['selesai'] }}</li>
+                            <li>Rapat Keuangan HSSE</li>
                         @endforeach
                     </ul>
                 @else
@@ -162,8 +142,8 @@
                 @endif
             </div>
             @if($isAvailable)
-            <p class="status tersedia">Tersedia</p>
-            <a href="/formpinjam/{{ $ruang->id }}" class="btn btn-tersedia">Pinjam</a>
+            <!-- <p class="status tersedia">Tersedia</p> -->
+            <a href="/formpinjam/{{ $ruang->id }}" class="btn btn-tersedia">Detail</a>
         @else
             <p class="status tidak-tersedia">Tidak Tersedia</p>
             <a href="#" class="btn btn-tidak-tersedia disabled">Pinjam</a>
@@ -258,7 +238,7 @@
                     @if(count($slotsKosong) > 0)
                         <ul>
                             @foreach($slotsKosong as $slot)
-                                <li>{{ $slot['mulai'] }} - {{ $slot['selesai'] }}</li>
+                                <li>Rapat Keperluan Tim ICT</li>
                             @endforeach
                         </ul>
                     @else
@@ -268,8 +248,8 @@
 
                 {{-- Status dan tombol pinjam --}}
                 @if($isAvailable)
-                    <p class="status tersedia">Tersedia</p>
-                    <a href="/formpinjam/{{ $ruang->id }}" class="btn btn-tersedia">Pinjam</a>
+                    <!-- <p class="status tersedia">Tersedia</p> -->
+                    <a href="/formpinjam/{{ $ruang->id }}" class="btn btn-tersedia">Detail</a>
                 @else
                     <p class="status tidak-tersedia">Tidak Tersedia</p>
                     <a href="#" class="btn btn-tidak-tersedia disabled">Pinjam</a>
@@ -291,6 +271,59 @@
         </div>
     @endforeach
 </div>
+
+<!-- Popup Modal -->
+<div id="detailModal" class="modal hidden">
+  <div class="modal-content">
+    <h2>Detail Ruangan</h2>
+    <p>Konten detail ruangan bisa diletakkan di sini...</p>
+    <button id="closeModal" class="btn-kembali">Kembali</button>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const userMenuButton = document.getElementById('user-menu-button');
+    const userDropdown = document.getElementById('user-dropdown');
+
+    // --- Dropdown User ---
+    userMenuButton.addEventListener('click', function (event) {
+      event.stopPropagation();
+      userDropdown.classList.toggle('hidden');
+    });
+
+    window.addEventListener('click', function () {
+      if (!userDropdown.classList.contains('hidden')) {
+        userDropdown.classList.add('hidden');
+      }
+    });
+
+    // --- Modal Detail ---
+    const detailButtons = document.querySelectorAll('.btn-tersedia');
+    const modal = document.getElementById('detailModal');
+    const closeModal = document.getElementById('closeModal');
+
+    detailButtons.forEach(btn => {
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        modal.classList.remove('hidden');
+      });
+    });
+
+    closeModal.addEventListener('click', function () {
+      modal.classList.add('hidden');
+    });
+
+    // Tutup modal kalau klik di luar konten
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal) {
+        modal.classList.add('hidden');
+      }
+    });
+  });
+</script>
+
+
 
             
 <script>

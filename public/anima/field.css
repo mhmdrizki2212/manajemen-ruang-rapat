@@ -172,6 +172,12 @@ header {
     display: flex;
     flex-direction: column;
     align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 25px;
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
 @media (min-width: 768px) {
@@ -225,10 +231,10 @@ header {
 }
 
 .ruangan-gambar img {
+    width: 100%;
+    height: 12rem; /* 192px */
     object-fit: cover;
     border-radius: 0.5rem; /* 8px */
-    width: 300px; /* Lebar gambar */
-    height: 200px; /* Tinggi gambar */
 }
 
 /* Buttons */
@@ -310,89 +316,47 @@ footer {
     color: #dc2626; /* red-600 */
 }
 
-
-/* --- STYLES FOR DROPDOWN --- */
-.dropdown-container {
-    position: relative;
-    display: inline-block;
+/* Modal background */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
 }
 
-.dropdown-menu {
-    position: absolute;
-    right: 10;
-    top: calc(100% + 10px); /* Jarak dropdown dari ikon */
-    background-color: rgba(43, 41, 41, 0.412);
-    color: #333;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    width: 150px;
-    z-index: 100;
-    overflow: hidden;
-    /* Animasi */
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 0.2s ease, transform 0.2s ease;
+/* Isi modal */
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 
-.dropdown-menu.hidden {
-    opacity: 0;
-    transform: translateY(-10px);
-    pointer-events: none;
+/* Tombol kembali */
+.btn-kembali {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background: #d9534f;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
-.dropdown-item {
-    display: block;
-    padding: 0.75rem 1rem;
-    text-decoration: none;
-    color: #ffffff;
-    font-size: 0.9rem;
+.btn-kembali:hover {
+  background: #c9302c;
 }
 
-.dropdown-item:hover {
-    background-color: #f87171; /* Warna latar saat di-hover */
+/* Class hidden */
+.hidden {
+  display: none;
 }
-
-.dropdown-menu a,
-.dropdown-menu button {
-    display: block;
-    width: 100%;
-    padding: 10px 15px;
-    text-align: left;
-    background: transparent;
-    border: none;
-    color: rgb(1, 1, 1);
-    font-size: 14px;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.dropdown-menu a:hover,
-.dropdown-menu button:hover {
-    background: rgba(255, 255, 255, 0.2);
-    background-color: #f87171; /* Warna latar saat di-hover */
-
-}
-
-
-.dropdown-menu a,
-.dropdown-menu button {
-    display: block;
-    width: 100%;
-    padding: 10px 15px;
-    text-align: left;
-    background: transparent;
-    border: none;
-    color: rgb(2, 2, 2);
-    font-size: 14px;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.dropdown-menu a:hover,
-.dropdown-menu button:hover {
-    background: rgba(255, 255, 255, 0.2);
-    background-color: #f87171; /* Warna latar saat di-hover */
-
-}
-
-
