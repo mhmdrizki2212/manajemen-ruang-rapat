@@ -47,6 +47,23 @@ class JadwalController extends Controller
         'ruang_id' => 'required'
     ]);
 
+    // 🔹 Cek jadwal tabrakan
+    $overlap = Jadwal::where('ruang_id', $request->ruang_id)
+        ->whereDate('tanggal', $request->tanggal)
+        ->where(function($q) use ($request) {
+            $q->whereBetween('jam_mulai', [$request->jam_mulai, $request->jam_selesai])
+              ->orWhereBetween('jam_selesai', [$request->jam_mulai, $request->jam_selesai])
+              ->orWhere(function($q2) use ($request) {
+                  $q2->where('jam_mulai', '<=', $request->jam_mulai)
+                     ->where('jam_selesai', '>=', $request->jam_selesai);
+              });
+        })
+        ->exists();
+
+    if ($overlap) {
+        return back()->withErrors(['msg' => 'Jadwal tabrakan, pilih waktu lain'])->withInput();
+    }
+
     Jadwal::create([
         'user_admin_id' => Auth::id(),
         'ruang_id' => $request->ruang_id,
@@ -57,10 +74,52 @@ class JadwalController extends Controller
         'jam_selesai' => $request->jam_selesai,
     ]);
 
-    return redirect()
-        ->route('jadwals.index')
-        ->with('success', 'Jadwal berhasil disimpan!');
+    return redirect()->route('jadwals.index')->with('success', 'Jadwal berhasil disimpan!');
 }
+
+public function update(Request $request, $id)
+{
+    $request->validate([
+        'nama_kegiatan' => 'required',
+        'fungsi' => 'required',
+        'tanggal' => 'required|date',
+        'jam_mulai' => 'required',
+        'jam_selesai' => 'required',
+        'ruang_id' => 'required'
+    ]);
+
+    $jadwal = Jadwal::findOrFail($id);
+
+    // 🔹 Cek tabrakan, kecuali dengan jadwal ini sendiri
+    $overlap = Jadwal::where('ruang_id', $request->ruang_id)
+        ->whereDate('tanggal', $request->tanggal)
+        ->where('id', '!=', $jadwal->id)
+        ->where(function($q) use ($request) {
+            $q->whereBetween('jam_mulai', [$request->jam_mulai, $request->jam_selesai])
+              ->orWhereBetween('jam_selesai', [$request->jam_mulai, $request->jam_selesai])
+              ->orWhere(function($q2) use ($request) {
+                  $q2->where('jam_mulai', '<=', $request->jam_mulai)
+                     ->where('jam_selesai', '>=', $request->jam_selesai);
+              });
+        })
+        ->exists();
+
+    if ($overlap) {
+        return back()->withErrors(['msg' => 'Jadwal tabrakan, pilih waktu lain'])->withInput();
+    }
+
+    $jadwal->update([
+        'ruang_id' => $request->ruang_id,
+        'nama_kegiatan' => $request->nama_kegiatan,
+        'fungsi' => $request->fungsi,
+        'tanggal' => $request->tanggal,
+        'jam_mulai' => $request->jam_mulai,
+        'jam_selesai' => $request->jam_selesai,
+    ]);
+
+    return redirect()->route('jadwals.index')->with('success', 'Jadwal berhasil diperbarui');
+}
+
 
     public function edit($id)
     {
@@ -69,29 +128,6 @@ class JadwalController extends Controller
         return view('back.jadwal.edit', compact('jadwal', 'gedungs'));
     }
 
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'nama_kegiatan' => 'required',
-            'fungsi' => 'required',
-            'tanggal' => 'required|date',
-            'jam_mulai' => 'required',
-            'jam_selesai' => 'required',
-            'ruang_id' => 'required'
-        ]);
-
-        $jadwal = Jadwal::findOrFail($id);
-        $jadwal->update([
-            'ruang_id' => $request->ruang_id,
-            'nama_kegiatan' => $request->nama_kegiatan,
-            'fungsi' => $request->fungsi,
-            'tanggal' => $request->tanggal,
-            'jam_mulai' => $request->jam_mulai,
-            'jam_selesai' => $request->jam_selesai,
-        ]);
-
-        return redirect()->route('jadwals.index')->with('success', 'Jadwal berhasil diperbarui');
-    }
 
     public function destroy($id)
     {
@@ -107,4 +143,33 @@ class JadwalController extends Controller
         $ruangs = Ruang::where('gedung_id', $gedungId)->get();
         return response()->json($ruangs);
     }
+
+        // Cek apakah ruangan tersedia pada tanggal & jam tertentu
+    public function checkJadwal(Request $request)
+    {
+        $request->validate([
+            'ruang_id' => 'required|exists:ruangs,id',
+            'tanggal' => 'required|date',
+            'jam_mulai' => 'required',
+            'jam_selesai' => 'required',
+        ]);
+
+        $terpakai = Jadwal::where('ruang_id', $request->ruang_id)
+            ->whereDate('tanggal', $request->tanggal)
+            ->where(function($q) use ($request) {
+                $q->whereBetween('jam_mulai', [$request->jam_mulai, $request->jam_selesai])
+                ->orWhereBetween('jam_selesai', [$request->jam_mulai, $request->jam_selesai])
+                ->orWhere(function($q2) use ($request) {
+                    $q2->where('jam_mulai', '<=', $request->jam_mulai)
+                        ->where('jam_selesai', '>=', $request->jam_selesai);
+                });
+            })
+            ->exists();
+
+        return response()->json([
+            'tersedia' => !$terpakai,
+            'message' => $terpakai ? 'Ruangan sudah digunakan pada jam ini.' : 'Ruangan tersedia.'
+        ]);
+    }
+
 }

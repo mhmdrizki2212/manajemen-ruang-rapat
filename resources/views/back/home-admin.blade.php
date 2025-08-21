@@ -129,7 +129,7 @@
                                 </svg>
                             </div>
                         </div>
-                        <div class="text-2xl font-bold text-gray-800 mb-2"><p>{{ $totalRegularUsers }}</p>
+                        <div class="text-2xl font-bold text-gray-800 mb-2"><p>{{  $totalRuangTerpakaiHariIni }}</p>
                         </div>
 
                     </div>
@@ -165,110 +165,91 @@
                 <div class="bg-white rounded-xl shadow-sm overflow-hidden mb-8">
                     <div class="px-6 py-4 border-b border-gray-200">
                         <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-semibold text-gray-800">Recent Orders</h3>
+                            <h3 class="text-lg font-semibold text-gray-800">Jadwal Hari Ini</h3>
                             <button class="text-sm font-medium text-blue-500 hover:text-blue-700">View All</button>
                         </div>
                     </div>
                     
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th scope="col" class="relative px-6 py-3">
-                                        <span class="sr-only">Action</span>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#7689</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">John Smith</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">May 12, 2023</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$124.98</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Completed</span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <a href="#" class="text-blue-500 hover:text-blue-700">View</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#7688</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Sarah Johnson</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">May 12, 2023</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$84.20</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Processing</span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <a href="#" class="text-blue-500 hover:text-blue-700">View</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#7687</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Michael Brown</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">May 11, 2023</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$214.50</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Completed</span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <a href="#" class="text-blue-500 hover:text-blue-700">View</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#7686</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Emily Davis</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">May 10, 2023</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$149.99</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Cancelled</span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <a href="#" class="text-blue-500 hover:text-blue-700">View</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#7685</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">David Wilson</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">May 9, 2023</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$64.75</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Shipped</span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <a href="#" class="text-blue-500 hover:text-blue-700">View</a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+<div class="overflow-x-auto">
+    <table class="min-w-full border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+        <thead class="bg-gray-50">
+            <tr class="text-gray-700 text-xs font-semibold uppercase tracking-wider">
+                <th class="px-4 py-3 text-left">No</th>
+                <th class="px-4 py-3 text-left">User</th>
+                <th class="px-4 py-3 text-left">Ruangan</th>
+                <th class="px-4 py-3 text-left">Fungsi</th>
+                <th class="px-4 py-3 text-left">Tanggal</th>
+                <th class="px-4 py-3 text-left">Jam Pelaksanaan</th>
+                <th class="px-4 py-3 text-center">Action</th>
+                <th class="px-4 py-3 text-center">Status</th>
+            </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200 text-sm">
+            @forelse ($jadwals as $jadwal)
+                <tr>
+                    <td class="px-4 py-2">
+                        {{ $loop->iteration + ($jadwals->currentPage() - 1) * $jadwals->perPage() }}
+                    </td>
+                    <td class="px-4 py-2">{{ $jadwal->userAdmin->name ?? '-' }}</td>
+                    <td class="px-4 py-2 font-medium text-gray-900">{{ $jadwal->ruang->nama ?? '-' }}</td>
+                    <td class="px-4 py-2">{{ $jadwal->fungsi }}</td>
+                    <td class="px-4 py-2">{{ \Carbon\Carbon::parse($jadwal->tanggal)->format('d-m-Y') }}</td>
+                    <td class="px-4 py-2">{{ $jadwal->jam_mulai }} -- {{ $jadwal->jam_selesai }}</td>
+                    <td class="px-4 py-2 text-center">
+                        @php
+                        $statusText = $jadwal->status['text'] ?? '';
+                    @endphp
                     
-                    <div class="px-6 py-4 border-t border-gray-200">
-                        <div class="flex items-center justify-between">
-                            <div class="text-sm text-gray-500">Showing <span class="font-medium">1</span> to <span class="font-medium">5</span> of <span class="font-medium">42</span> orders</div>
-                            <div class="flex space-x-2">
-                                <button class="px-3 py-1 rounded-lg border border-gray-200 text-sm text-gray-600 hover:bg-gray-50">Previous</button>
-                                <button class="px-3 py-1 rounded-lg bg-blue-500 text-white text-sm hover:bg-blue-600">1</button>
-                                <button class="px-3 py-1 rounded-lg border border-gray-200 text-sm text-gray-600 hover:bg-gray-50">2</button>
-                                <button class="px-3 py-1 rounded-lg border border-gray-200 text-sm text-gray-600 hover:bg-gray-50">3</button>
-                                <button class="px-3 py-1 rounded-lg border border-gray-200 text-sm text-gray-600 hover:bg-gray-50">Next</button>
-                            </div>
+                    <span class="@if($jadwal->status == 'Sedang Berlangsung') bg-blue-200 text-blue-800
+                        @elseif($jadwal->status == 'Belum Dimulai') bg-yellow-200 text-yellow-800
+                        @else bg-green-200 text-green-800 @endif
+                        px-2 py-0.5 rounded-full text-xs font-medium">
+               {{ $jadwal->status ['text'] }}
+           </span>
+           
+                    
+                    </td>
+                    <td class="px-4 py-2 text-center">
+                        <div class="flex justify-center space-x-1">
+                            <a href="{{ route('jadwals.edit', $jadwal->id) }}"
+                               class="px-2 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 transition">
+                                Edit
+                            </a>
+                            <form action="{{ route('jadwals.destroy', $jadwal->id) }}" method="POST" class="form-hapus">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button"
+                                    class="px-2 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600 transition btn-hapus">
+                                    Delete
+                                </button>
+                            </form>
                         </div>
-                    </div>
-                </div>
+                    </td>
+
+                    
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="10" class="px-4 py-2 text-center text-gray-500">
+                        Tidak ada jadwal hari ini.
+                    </td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <div class="mt-4">
+        {{ $jadwals->links() }}
+    </div>
+</div>
+
                 
                 <!-- Recent Activity -->
                 <div class="bg-white rounded-xl shadow-sm overflow-hidden">
                     <div class="px-6 py-4 border-b border-gray-200">
                         <div class="flex items-center justify-between">
                             <h3 class="text-lg font-semibold text-gray-800">Recent Activity</h3>
-                            <button class="text-sm font-medium text-blue-500 hover:text-blue-700">View All</button>
                         </div>
                     </div>
                     

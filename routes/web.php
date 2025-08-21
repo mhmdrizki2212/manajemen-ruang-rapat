@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\RuangController;
 use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\RuangUserController;
+use App\Http\Controllers\JadwalUserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,6 +47,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('users', UserController::class);
     Route::resource('ruangs', RuangController::class);
     Route::resource('jadwals', JadwalController::class);
+    Route::get('/check-jadwal', [JadwalController::class, 'checkJadwal']);
+
 
     Route::get('/get-ruangs/{gedungId}', [JadwalController::class, 'getRuangs']);
     // routes/web.php
@@ -75,6 +78,9 @@ Route::middleware(['auth', 'role:user'])->group(function () {
 
     Route::get('/ruang/zona1', [RuangUserController::class, 'zona1'])->name('ruang.zona1');
     Route::get('/ruang/field', [RuangUserController::class, 'field'])->name('ruang.field');
+    Route::get('/jadwal/pinjam', [JadwalUserController::class, 'create'])->name('jadwal.create');
+    // Menyimpan data peminjaman
+    Route::post('/jadwal/pinjam', [JadwalUserController::class, 'store'])->name('jadwal.store');
 
 
 });

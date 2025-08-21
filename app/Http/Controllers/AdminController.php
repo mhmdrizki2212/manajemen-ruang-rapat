@@ -13,35 +13,56 @@ class AdminController extends Controller
     public function index()
     {
         $now = Carbon::now('Asia/Jakarta');
+        $today = Carbon::today('Asia/Jakarta');
 
-        // Hitung jumlah semua user
+        // 🔹 Statistik User & Ruang
         $totalUsers = User::count();
-
-        // Hitung jumlah admin
         $totalAdmins = User::where('role', 'admin')->count();
-
-        // Hitung jumlah user biasa
         $totalRegularUsers = User::where('role', 'user')->count();
-
-        // Hitung jumlah ruang
         $totalRuang = Ruang::count();
 
-        // Hitung jadwal akan datang
-        $totalUpcomingJadwal = Jadwal::where(function($query) use ($now) {
-                // Jadwal hari ini, jam mulai harus lebih dari sekarang
+        // 🔹 Total jadwal yang akan datang
+        $totalUpcomingJadwal = Jadwal::where(function ($query) use ($now) {
                 $query->whereDate('tanggal', $now->toDateString())
                       ->whereTime('jam_mulai', '>', $now->toTimeString());
             })
-            ->orWhereDate('tanggal', '>', $now->toDateString()) // Jadwal di masa depan
+            ->orWhereDate('tanggal', '>', $now->toDateString())
             ->count();
 
-        // Kirim semua variabel ke view
+        // 🔹 Ruang terpakai hari ini (sedang berlangsung)
+        $totalRuangTerpakaiHariIni = Jadwal::whereDate('tanggal', $today)
+        ->distinct('ruang_id')
+        ->count('ruang_id');
+    
+
+        // 🔹 Data jadwal hari ini (pakai paginate supaya bisa di-blade dengan links())
+        $jadwals = Jadwal::with(['ruang', 'userAdmin'])
+            ->whereDate('tanggal', $today)
+            ->orderBy('jam_mulai', 'asc')
+            ->paginate(10); // <= gunakan pagination
+
+        // 🔹 Tambahkan kolom status (manual, tidak di DB)
+        $jadwals->getCollection()->transform(function ($jadwal) use ($now) {
+            if ($jadwal->jam_mulai <= $now->format('H:i:s') && $jadwal->jam_selesai >= $now->format('H:i:s')) {
+                $jadwal->status = 'Sedang Berlangsung';
+            } elseif ($jadwal->jam_mulai > $now->format('H:i:s')) {
+                $jadwal->status = 'Belum Dimulai';
+            } else {
+                $jadwal->status = 'Selesai';
+            }
+            return $jadwal;
+        });
+        
+
+        // 🔹 Kirim ke view
         return view('back.home-admin', compact(
             'totalUsers',
             'totalAdmins',
             'totalRegularUsers',
             'totalRuang',
-            'totalUpcomingJadwal'
+            'totalUpcomingJadwal',
+            'totalRuangTerpakaiHariIni',
+            'jadwals'
         ));
     }
 }

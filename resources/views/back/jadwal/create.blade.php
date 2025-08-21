@@ -222,6 +222,43 @@
             </div>
         </div>
 
+
+        <div id="jadwal-info" style="color: red; font-weight: bold; margin-bottom: 10px;"></div>
+
+<script>
+const ruangSelect = document.getElementById('ruang');
+const tanggalInput = document.getElementById('tanggal');
+const jamMulaiInput = document.getElementById('jam_mulai');
+const jamSelesaiInput = document.getElementById('jam_selesai');
+const submitBtn = document.getElementById('submit-btn'); // pastikan tombol submit punya id ini
+const infoDiv = document.getElementById('jadwal-info');
+
+function checkJadwal() {
+    const ruangId = ruangSelect.value;
+    const tanggal = tanggalInput.value;
+    const jamMulai = jamMulaiInput.value;
+    const jamSelesai = jamSelesaiInput.value;
+
+    if (!ruangId || !tanggal || !jamMulai || !jamSelesai) return;
+
+    fetch(`/check-jadwal?ruang_id=${ruangId}&tanggal=${tanggal}&jam_mulai=${jamMulai}&jam_selesai=${jamSelesai}`)
+        .then(res => res.json())
+        .then(data => {
+            if (!data.tersedia) {
+                infoDiv.textContent = data.message;
+                submitBtn.disabled = true;
+            } else {
+                infoDiv.textContent = '';
+                submitBtn.disabled = false;
+            }
+        });
+}
+
+[ruangSelect, tanggalInput, jamMulaiInput, jamSelesaiInput].forEach(el => {
+    el.addEventListener('change', checkJadwal);
+});
+</script>
+
  <!-- Load Libraries -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

@@ -374,4 +374,25 @@ footer {
 }
 
 
+.dropdown-menu a,
+.dropdown-menu button {
+    display: block;
+    width: 100%;
+    padding: 10px 15px;
+    text-align: left;
+    background: transparent;
+    border: none;
+    color: rgb(2, 2, 2);
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.dropdown-menu a:hover,
+.dropdown-menu button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    background-color: #f87171; /* Warna latar saat di-hover */
+
+}
+
 

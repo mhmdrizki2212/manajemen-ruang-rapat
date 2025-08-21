@@ -82,127 +82,120 @@
                 </nav>
             </div>
 
-            <!-- Daftar Ruangan Lantai 1 -->
+  <!-- Daftar Ruangan Lantai 1 -->
 <div id="lantai1" class="ruangan-list" style="display: block;">
-    
+    @foreach($ruangs->where('lantai', 1) as $ruang)
     <div class="ruangan-item">
+        {{-- Bagian Info Ruangan --}}
         <div class="ruangan-info">
-            <h2>Ruang Rapat Utama</h2>
-            <p class="status tersedia">Tersedia</p>
-            <a href="/formpinjam" class="btn btn-tersedia">Pinjam</a>
-        </div>
-        <div class="ruangan-gambar">
-            <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=500" alt="Ruang Rapat Utama">
-        </div>
-    </div>
-    
-    <div class="ruangan-item">
-        <div class="ruangan-info">
-            <h2>Ruang Diskusi Kecil</h2>
-            <p class="status tidak-tersedia">Tidak Tersedia</p>
-            <a href="#" class="btn btn-tidak-tersedia">Pinjam</a>
-        </div>
-        <div class="ruangan-gambar">
-            <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=500" alt="Ruang Diskusi Kecil">
-        </div>
-    </div>
+            <h2>{{ $ruang->nama }}</h2>
 
+                        {{-- Bagian Jadwal Hari Ini --}}
+                        @if($ruang->jadwals->isNotEmpty())
+                        <div class="jadwal-list mt-2">
+                            <h3>Jadwal Hari Ini (05:00-17:00)</h3>
+                            <ul>
+                                @foreach($ruang->jadwals as $jadwal)
+                                    <li>
+                                        {{ \Carbon\Carbon::parse($jadwal->jam_mulai)->format('H:i') }} -
+                                        {{ \Carbon\Carbon::parse($jadwal->jam_selesai)->format('H:i') }}
+                                        : {{ $jadwal->nama_kegiatan }}
+                                        ({{ $jadwal->userAdmin->name ?? 'Unknown' }})
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @else
+                        <div class="jadwal-list mt-2">
+                            <p>Tidak ada jadwal hari ini. Ruang tersedia dari 05:00 sampai 17:00.</p>
+                        </div>
+                    @endif
 
-    <div class="ruangan-item">
-        <div class="ruangan-info">
-            <h2>Ruang INI</h2>
-            <p class="status tidak-tersedia">Tidak Tersedia</p>
-            <a href="#" class="btn btn-tidak-tersedia">Pinjam</a>
-        </div>
+                    @php
+                    // Jam kerja: 05:00 sampai 17:00
+                    $startWork = \Carbon\Carbon::createFromTimeString('05:00:00');
+                    $endWork = \Carbon\Carbon::createFromTimeString('17:00:00');
+                
+                    // Hitung total durasi yang dipakai hari ini
+                    $totalBookedMinutes = $ruang->jadwals->sum(function($jadwal) use ($startWork, $endWork) {
+                        $jamMulai = \Carbon\Carbon::parse($jadwal->jam_mulai);
+                        $jamSelesai = \Carbon\Carbon::parse($jadwal->jam_selesai);
+                
+                        // Batasi durasi dalam jam kerja
+                        if ($jamMulai < $startWork) $jamMulai = $startWork;
+                        if ($jamSelesai > $endWork) $jamSelesai = $endWork;
+                
+                        return $jamMulai->diffInMinutes($jamSelesai);
+                    });
+                
+                    $totalWorkMinutes = $startWork->diffInMinutes($endWork);
+                    $isAvailable = $totalBookedMinutes < $totalWorkMinutes;
+                @endphp
+                
+                @if($isAvailable)
+                    <p class="status tersedia">Tersedia</p>
+                    <a href="/formpinjam/{{ $ruang->id }}" class="btn btn-tersedia">Pinjam</a>
+                @else
+                    <p class="status tidak-tersedia">Tidak Tersedia</p>
+                    <a href="#" class="btn btn-tidak-tersedia disabled">Pinjam</a>
+                @endif
+                
+
+                </div>
+    
+
+    
+        {{-- Bagian Gambar Ruangan --}}
         <div class="ruangan-gambar">
-            <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=500" alt="Ruang Diskusi Kecil">
+            @if($ruang->img)
+                <img src="{{ asset('storage/' . $ruang->img) }}" 
+                     alt="Ruang {{ $ruang->nama }}" 
+                     class="w-64 h-40 object-cover rounded-lg shadow">
+            @else
+                <img src="https://via.placeholder.com/300x200?text=No+Image" 
+                     alt="No Image" 
+                     class="w-64 h-40 object-cover rounded-lg shadow">
+            @endif
         </div>
     </div>
     
-    <div class="ruangan-item">
-        <div class="ruangan-info">
-            <h2>Ruang ITU</h2>
-            <p class="status tersedia">Tersedia</p>
-            <a href="/formpinjam" class="btn btn-tersedia">Pinjam</a>
-        </div>
-        <div class="ruangan-gambar">
-            <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=500" alt="Ruang Rapat Utama">
-        </div>
-    </div>
-        
-    <div class="ruangan-item">
-        <div class="ruangan-info">
-            <h2>Ruang ANU</h2>
-            <p class="status tersedia">Tersedia</p>
-            <a href="/formpinjam" class="btn btn-tersedia">Pinjam</a>
-        </div>
-        <div class="ruangan-gambar">
-            <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=500" alt="Ruang Rapat Utama">
-        </div>
-    </div>
-
+    @endforeach
 </div>
 
 <!-- Daftar Ruangan Lantai 2 -->
-<div id="lantai2" class="ruangan-list" style="display: none;">
-    <!-- contoh isi lantai 2 -->
-    <div class="ruangan-item">
-        <div class="ruangan-info">
-            <h2>Ruang Diskusi Kecil</h2>
-            <p class="status tidak-tersedia">Tidak Tersedia</p>
-            <a href="#" class="btn btn-tidak-tersedia">Pinjam</a>
-        </div>
-        <div class="ruangan-gambar">
-            <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=500" alt="Ruang Diskusi Kecil">
-        </div>
-    </div>
+<div id="lantai2" class="ruangan-list mb-3" style="display: none;">
+    @foreach($ruangs->where('lantai', 2) as $ruang)
+        <div class="ruangan-item">
+            {{-- Bagian Info Ruangan --}}
+            <div class="ruangan-info">
+                <h2>{{ $ruang->nama }}</h2>
 
-    <div class="ruangan-item">
-        <div class="ruangan-info">
-            <h2>Ruang INI JUGA</h2>
-            <p class="status tidak-tersedia">Tidak Tersedia</p>
-            <a href="#" class="btn btn-tidak-tersedia">Pinjam</a>
-        </div>
-        <div class="ruangan-gambar">
-            <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=500" alt="Ruang Diskusi Kecil">
-        </div>
-    </div>
+                @if($ruang->status ?? false)
+                    <p class="status tersedia">Tersedia</p>
+                    <a href="/formpinjam/{{ $ruang->id }}" class="btn btn-tersedia">Pinjam</a>
+                @else
+                    <p class="status tidak-tersedia">Tidak Tersedia</p>
+                    <a href="#" class="btn btn-tidak-tersedia disabled">Pinjam</a>
+                @endif
+            </div>
 
-    <div class="ruangan-item">
-        <div class="ruangan-info">
-            <h2>Ruang ITU JUGA</h2>
-            <p class="status tidak-tersedia">Tidak Tersedia</p>
-            <a href="#" class="btn btn-tidak-tersedia">Pinjam</a>
+            {{-- Bagian Gambar Ruangan --}}
+            <div class="ruangan-gambar">
+                @if($ruang->img)
+                    <img src="{{ asset('storage/' . $ruang->img) }}" 
+                         alt="Ruang {{ $ruang->nama }}" 
+                         class="w-64 h-40 object-cover rounded-lg shadow">
+                @else
+                    <img src="https://via.placeholder.com/300x200?text=No+Image" 
+                         alt="No Image" 
+                         class="w-64 h-40 object-cover rounded-lg shadow">
+                @endif
+            </div>
         </div>
-        <div class="ruangan-gambar">
-            <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=500" alt="Ruang Diskusi Kecil">
-        </div>
-    </div>
-        
-    <div class="ruangan-item">
-        <div class="ruangan-info">
-            <h2>Ruang Rapat Utama</h2>
-            <p class="status tersedia">Tersedia</p>
-            <a href="/formpinjam" class="btn btn-tersedia">Pinjam</a>
-        </div>
-        <div class="ruangan-gambar">
-            <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=500" alt="Ruang Rapat Utama">
-        </div>
-    </div>
-    
-    <div class="ruangan-item">
-        <div class="ruangan-info">
-            <h2>Ruang ANU JUGA</h2>
-            <p class="status tersedia">Tersedia</p>
-            <a href="/formpinjam" class="btn btn-tersedia">Pinjam</a>
-        </div>
-        <div class="ruangan-gambar">
-            <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=500" alt="Ruang Rapat Utama">
-        </div>
-    </div>
-    
+    @endforeach
 </div>
 
+            
 <script>
 function openTab(evt, tabId) {
     // Sembunyikan semua daftar ruangan
