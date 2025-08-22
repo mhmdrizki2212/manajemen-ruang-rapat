@@ -331,12 +331,17 @@ header {
     opacity: 1;
     visibility: visible;
 }
+/* Mencegah kolom pertama (Tanggal) di tabel agar tidak wrap */
+.history-table th:first-child,
+.history-table td:first-child {
+  white-space: nowrap;
+}
 
 .modal-content {
     background: #fff;
     padding: 2rem;
     border-radius: 12px;
-    max-width: 600px;
+    max-width: 1000px!important;
     width: 90%;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     transform: scale(0.95);
@@ -537,4 +542,29 @@ footer {
 .modal-actions {
     margin-top: 1.5rem;
     text-align: right;
+}
+/* Modifikasi .modal-content */
+.modal-content {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 600px;
+  width: 90%;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  transform: scale(0.95);
+  transition: transform 0.3s ease;
+  
+  /* --- TAMBAHKAN 3 BARIS INI --- */
+  max-height: 90vh; /* Batasi tinggi modal, misal 90% dari tinggi layar */
+  display: flex;
+  flex-direction: column;
+}
+/* Modifikasi .history-container */
+.history-container {
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+
+  /* --- TAMBAHKAN BARIS INI --- */
+  overflow-y: auto; /* Aktifkan scroll vertikal HANYA jika kontennya panjang */
 }

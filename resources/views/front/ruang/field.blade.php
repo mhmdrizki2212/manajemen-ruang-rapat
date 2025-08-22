@@ -7,7 +7,6 @@
     <title>Daftar Ruangan Gedung Zona 1 - Pertamina Hulu Rokan</title>
     
     <link rel="stylesheet" href="{{ asset('anima/field.css') }}">
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Work+Sans:wght@600;700&display=swap" rel="stylesheet">
@@ -16,30 +15,25 @@
 
     <div class="main-container">
 
-        <header>
-            <div class="container header-inner">
-                <a href="/" class="logo">
-                    <img src="{{ asset('anima/logo.png') }}" alt="Logo Pertamina">
-                </a>
-                <nav class="main-nav">
-                    <a href="/">Beranda</a>
-                    <a href="/#zona1" class="active">Lihat Jadwal</a>
-                </nav>
-                <div class="user-icons">
+    <header>
+        <div class="container header-inner">
+            <div class="logo">
+                <img src="{{ asset('anima/logo.png') }}" alt="Logo Pertamina">
+                <!--<span class="logo-text">Pertamina Jambi</span> -->
+            </div>
+            <nav class="main-nav">
+                <a href="/">Beranda</a>
+                <a href="/#zona1" class="active">Lihat Jadwal</a>
+                <a href="/riwayat">Riwayat</a>
+            </nav>
+            <div class="user-icons">
                     <a href="#" class="icon-link">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.4-1.4a2 2 0 01-.6-1.4V11a6 6 0 10-12 0v3.2c0 .5-.2 1-.6 1.4L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+                        <!-- Ikon Notifikasi -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
                     </a>
+                    <!-- Dropdown Container -->
                     <div class="dropdown-container">
-                        <a href="#" class="icon-link" id="user-menu-button">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                        </a>
-                        <div id="user-dropdown" class="dropdown-menu hidden">
-                            <a href="/profile" class="dropdown-item">Profile</a>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit" class="dropdown-item">Logout</button>
-                            </form>
-                        </div>
+                        {{-- ... (kode dropdown user tetap sama) ... --}}
                     </div>
                 </div>
             </div>
@@ -55,39 +49,36 @@
                 </nav>
             </div>
 
-            <div id="lantai1" class="ruangan-list">
-                @foreach($ruangs->where('lantai', 1) as $ruang)
+            @foreach(['1', '2'] as $lantai)
+            <div id="lantai{{ $lantai }}" class="ruangan-list" style="{{ $lantai == '1' ? '' : 'display: none;' }}">
+                @foreach($ruangs->where('lantai', $lantai) as $ruang)
                     @php
-                        // Logika untuk membuat timeline jadwal
-                        $startWork = \Carbon\Carbon::createFromTimeString('05:00:00');
-                        $endWork = \Carbon\Carbon::createFromTimeString('17:00:00');
-                        $jadwals = $ruang->jadwals->sortBy('jam_mulai');
-                        
-                        $timeline = [];
-                        $lastEnd = clone $startWork;
+    // =================================================================
+    // PENTING: Ganti bagian ini dengan data riwayat dari database Anda.
+    // Ini adalah data DUMMY untuk simulasi.
+    // Di aplikasi nyata, Anda harus mengirimkan data ini dari Controller.
+    $dummyHistory = [];
+    $users = ['Nadiatul Mawaddah', 'Andi Permana', 'Siti Rahmawati', 'Budi Santoso', 'Dewi Lestari'];
+    $activities = ['Induction HC dan HSE', 'Rapat Evaluasi Kinerja', 'Training Penggunaan Sistem', 'Diskusi Proyek Internal', 'Presentasi Klien'];
+    
+    // --> PASTIKAN BARIS DI BAWAH INI ADA DAN BERADA SEBELUM 'for'
+    $sampleFungsi = ['HSSE', 'ICT', 'HC']; 
 
-                        foreach ($jadwals as $jadwal) {
-                            $jamMulai = \Carbon\Carbon::parse($jadwal->jam_mulai);
-                            $jamSelesai = \Carbon\Carbon::parse($jadwal->jam_selesai);
-
-                            if ($jamMulai > $lastEnd) {
-                                $timeline[] = ['status' => 'Tersedia', 'mulai' => $lastEnd->format('H:i'), 'selesai' => $jamMulai->format('H:i')];
-                            }
-                            $timeline[] = ['status' => 'Dipesan', 'mulai' => $jamMulai->format('H:i'), 'selesai' => $jamSelesai->format('H:i'), 'kegiatan' => $jadwal->kegiatan ?? 'Rapat Terjadwal'];
-                            $lastEnd = $jamSelesai > $lastEnd ? $jamSelesai : $lastEnd;
-                        }
-
-                        if ($lastEnd < $endWork) {
-                            $timeline[] = ['status' => 'Tersedia', 'mulai' => $lastEnd->format('H:i'), 'selesai' => $endWork->format('H:i')];
-                        }
-
-                        $isAvailableToday = collect($timeline)->where('status', 'Tersedia')->isNotEmpty();
-                    @endphp
+    for ($i = 0; $i < 20; $i++) {
+        $dummyHistory[] = [
+            'tanggal' => \Carbon\Carbon::now()->subDays(rand(1, 30))->format('d M Y'),
+            'peminjam' => $users[array_rand($users)],
+            'kegiatan' => $activities[array_rand($activities)],
+            'fungsi' => $sampleFungsi[array_rand($sampleFungsi)] // Variabel $sampleFungsi digunakan di sini
+        ];
+    }
+    // =================================================================
+@endphp
 
                     <div class="ruangan-item" 
+                         data-id-ruang="{{ $ruang->id }}"
                          data-nama="{{ $ruang->nama }}" 
-                         data-img="{{ $ruang->img ? asset('storage/' . $ruang->img) : 'https://via.placeholder.com/400x250?text=No+Image' }}"
-                         data-timeline="{{ json_encode($timeline) }}">
+                         data-history="{{ json_encode($dummyHistory) }}">
                         
                         <div class="ruangan-gambar">
                             <img src="{{ $ruang->img ? asset('storage/' . $ruang->img) : 'https://via.placeholder.com/400x250?text=No+Image' }}" alt="Ruang {{ $ruang->nama }}">
@@ -96,151 +87,142 @@
                         <div class="ruangan-info">
                             <h2>{{ $ruang->nama }}</h2>
                             <div class="jadwal-ringkas">
-                                @if($isAvailableToday)
-                                    <p class="status-tersedia"><span class="status-dot"></span>Masih ada slot kosong hari ini</p>
-                                @else
-                                    <p class="status-dipesan"><span class="status-dot"></span>Penuh untuk hari ini</p>
-                                @endif
+                                <p class="status-tersedia"><span class="status-dot"></span>Lihat riwayat pemakaian ruangan</p>
                             </div>
-                            <button class="btn btn-detail">Lihat Detail & Jadwal</button>
+                            <button class="btn btn-detail">Lihat Detail</button>
                         </div>
                     </div>
                 @endforeach
             </div>
-
-            <div id="lantai2" class="ruangan-list" style="display: none;">
-                @foreach($ruangs->where('lantai', 2) as $ruang)
-                    @php
-                        $startWork = \Carbon\Carbon::createFromTimeString('05:00:00');
-                        $endWork = \Carbon\Carbon::createFromTimeString('17:00:00');
-                        $jadwals = $ruang->jadwals->sortBy('jam_mulai');
-                        
-                        $timeline = [];
-                        $lastEnd = clone $startWork;
-
-                        foreach ($jadwals as $jadwal) {
-                            $jamMulai = \Carbon\Carbon::parse($jadwal->jam_mulai);
-                            $jamSelesai = \Carbon\Carbon::parse($jadwal->jam_selesai);
-
-                            if ($jamMulai > $lastEnd) {
-                                $timeline[] = ['status' => 'Tersedia', 'mulai' => $lastEnd->format('H:i'), 'selesai' => $jamMulai->format('H:i')];
-                            }
-                            $timeline[] = ['status' => 'Dipesan', 'mulai' => $jamMulai->format('H:i'), 'selesai' => $jamSelesai->format('H:i'), 'kegiatan' => $jadwal->kegiatan ?? 'Rapat Terjadwal'];
-                            $lastEnd = $jamSelesai > $lastEnd ? $jamSelesai : $lastEnd;
-                        }
-
-                        if ($lastEnd < $endWork) {
-                            $timeline[] = ['status' => 'Tersedia', 'mulai' => $lastEnd->format('H:i'), 'selesai' => $endWork->format('H:i')];
-                        }
-                    @endphp
-                    <div class="ruangan-item"
-                         data-nama="{{ $ruang->nama }}"
-                         data-img="{{ $ruang->img ? asset('storage/' . $ruang->img) : 'https://via.placeholder.com/400x250?text=No+Image' }}"
-                         data-timeline="{{ json_encode($timeline) }}">
-                        
-                        <div class="ruangan-gambar">
-                            <img src="{{ $ruang->img ? asset('storage/' . $ruang->img) : 'https://via.placeholder.com/400x250?text=No+Image' }}" alt="Ruang {{ $ruang->nama }}">
-                        </div>
-
-                        <div class="ruangan-info">
-                            <h2>{{ $ruang->nama }}</h2>
-                            <div class="jadwal-ringkas">
-                                @if(collect($timeline)->where('status', 'Tersedia')->isNotEmpty())
-                                    <p class="status-tersedia"><span class="status-dot"></span>Masih ada slot kosong hari ini</p>
-                                @else
-                                    <p class="status-dipesan"><span class="status-dot"></span>Penuh untuk hari ini</p>
-                                @endif
-                            </div>
-                            <button class="btn btn-detail">Lihat Detail & Jadwal</button>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
+            @endforeach
         </main>
 
         <footer>
-            <div class="container">
-                 <div class="footer-logo">
-                    <img src="{{ asset('anima/logo.png') }}" alt="Logo Pertamina Footer">
-                </div>
-                <div class="footer-info">
-                    <p><strong>Address:</strong> Jl. Kol. M. Kukuh, Kenali Asam Atas, Kec. Kota Baru, Kota Jambi, Jambi 36128</p>
-                    <p><strong>Email:</strong> asdfghjkl@pertamina.com</p>
-                </div>
-                <div class="footer-copyright">
-                    <p>© Copyright PT Pertamina Hulu Rokan Zona 1 2025. All Right Reserved.</p>
-                </div>
-            </div>
+            {{-- ... (kode footer tetap sama) ... --}}
         </footer>
     </div>
 
     <div id="detailModal" class="modal">
         <div class="modal-content">
-            <h2 id="modal-title"></h2>
-            <div id="modal-schedule">
+            <h2 id="modal-title">Detail Ruangan</h2>
+            <p id="modal-subtitle">Lihat detail riwayat ruangan</p>
+
+            <div class="history-container">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Tanggal</th>
+                            <th>Peminjam</th>
+                            <th>Kegiatan</th>
+                            <th>Fungsi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="modal-table-body">
+                        </tbody>
+                </table>
+                <div class="pagination-footer">
+                    <span id="pagination-info"></span>
+                    <div class="pagination-controls" id="pagination-controls">
+                        </div>
                 </div>
-            <a href="/formpinjam/{{ $ruang->id }}" class="btn btn-tersedia">Pinjam</a>
-            <button id="closeModal" class="btn-kembali">Kembali</button>
+            </div>
+
+            <div class="modal-actions">
+                 <!-- <a href="#" id="pinjam-button" class="btn btn-detail">Pinjam Ruangan Ini</a> -->
+                <button id="closeModal" class="btn-kembali">Tutup</button>
+            </div>
         </div>
     </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    // --- Logika Dropdown User ---
-    const userMenuButton = document.getElementById('user-menu-button');
-    const userDropdown = document.getElementById('user-dropdown');
+    // --- Logika Dropdown User (tetap sama) ---
 
-    userMenuButton.addEventListener('click', function (event) {
-        event.stopPropagation();
-        userDropdown.classList.toggle('hidden');
-    });
-
-    window.addEventListener('click', function () {
-        if (!userDropdown.classList.contains('hidden')) {
-            userDropdown.classList.add('hidden');
-        }
-    });
-
-    // --- Logika Modal Detail Ruangan ---
+    // --- Logika Modal Detail Ruangan (Logika Baru dengan Paginasi) ---
     const modal = document.getElementById('detailModal');
     const modalTitle = document.getElementById('modal-title');
-    const modalSchedule = document.getElementById('modal-schedule');
+    const modalSubtitle = document.getElementById('modal-subtitle');
+    const tableBody = document.getElementById('modal-table-body');
     const closeModal = document.getElementById('closeModal');
     const detailButtons = document.querySelectorAll('.btn-detail');
+    const paginationInfo = document.getElementById('pagination-info');
+    const paginationControls = document.getElementById('pagination-controls');
+    // const pinjamButton = document.getElementById('pinjam-button');
+
+    let currentHistory = [];
+    let currentPage = 1;
+    const rowsPerPage = 6;
+
+    function renderTable(page) {
+        currentPage = page;
+        tableBody.innerHTML = ''; // Kosongkan tabel
+        
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+        const paginatedItems = currentHistory.slice(start, end);
+
+        paginatedItems.forEach(item => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${item.tanggal}</td>
+                <td>${item.peminjam}</td>
+                <td>${item.kegiatan}</td>
+                <td>${item.fungsi}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+
+        renderPagination();
+    }
+
+    function renderPagination() {
+        paginationControls.innerHTML = '';
+        const pageCount = Math.ceil(currentHistory.length / rowsPerPage);
+        
+        // Update Info
+        const startItem = (currentPage - 1) * rowsPerPage + 1;
+        const endItem = Math.min(startItem + rowsPerPage - 1, currentHistory.length);
+        paginationInfo.textContent = `Menampilkan ${startItem} sampai ${endItem} dari ${currentHistory.length} hasil...`;
+
+        // Tombol Previous
+        const prevButton = document.createElement('button');
+        prevButton.textContent = 'Previous';
+        prevButton.disabled = currentPage === 1;
+        prevButton.addEventListener('click', () => renderTable(currentPage - 1));
+        paginationControls.appendChild(prevButton);
+
+        // Tombol Angka (simplifikasi untuk contoh)
+        for (let i = 1; i <= pageCount; i++) {
+            const pageButton = document.createElement('button');
+            pageButton.textContent = i;
+            if (i === currentPage) {
+                pageButton.classList.add('active');
+            }
+            pageButton.addEventListener('click', () => renderTable(i));
+            paginationControls.appendChild(pageButton);
+        }
+
+        // Tombol Next
+        const nextButton = document.createElement('button');
+        nextButton.textContent = 'Next';
+        nextButton.disabled = currentPage === pageCount;
+        nextButton.addEventListener('click', () => renderTable(currentPage + 1));
+        paginationControls.appendChild(nextButton);
+    }
 
     detailButtons.forEach(button => {
         button.addEventListener('click', function () {
             const roomItem = this.closest('.ruangan-item');
             const nama = roomItem.dataset.nama;
-            const timeline = JSON.parse(roomItem.dataset.timeline);
+            const idRuang = roomItem.dataset.idRuang;
 
-            modalTitle.textContent = 'Jadwal Lengkap: ' + nama;
-            
-            // Kosongkan jadwal sebelumnya
-            modalSchedule.innerHTML = ''; 
+            modalTitle.textContent = nama;
+            currentHistory = JSON.parse(roomItem.dataset.history);
 
-            // Isi dengan jadwal baru
-            if (timeline.length > 0) {
-                timeline.forEach(slot => {
-                    const item = document.createElement('div');
-                    item.className = 'schedule-item';
-                    
-                    const time = document.createElement('span');
-                    time.className = 'time';
-                    time.textContent = `${slot.mulai} - ${slot.selesai}`;
-                    
-                    const status = document.createElement('span');
-                    status.className = `status ${slot.status.toLowerCase()}`;
-                    status.textContent = slot.status === 'Dipesan' ? (slot.kegiatan || 'Dipesan') : 'Tersedia';
+            // Update link tombol pinjam
+            // pinjamButton.href = `/formpinjam/${idRuang}`;
 
-                    item.appendChild(time);
-                    item.appendChild(status);
-                    modalSchedule.appendChild(item);
-                });
-            } else {
-                modalSchedule.innerHTML = '<p>Tidak ada jadwal untuk ditampilkan.</p>';
-            }
-            
+            renderTable(1); // Tampilkan halaman pertama
             modal.classList.add('visible');
         });
     });
@@ -258,11 +240,11 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-// --- Logika Tabs Lantai ---
+// --- Logika Tabs Lantai (tetap sama) ---
 function openTab(evt, tabId) {
     document.querySelectorAll('.ruangan-list').forEach(el => el.style.display = 'none');
     document.querySelectorAll('.tab-link').forEach(link => link.classList.remove('active'));
-    document.getElementById(tabId).style.display = 'grid'; // Gunakan 'grid' sesuai styling baru
+    document.getElementById(tabId).style.display = 'grid';
     evt.currentTarget.classList.add('active');
 }
 </script>

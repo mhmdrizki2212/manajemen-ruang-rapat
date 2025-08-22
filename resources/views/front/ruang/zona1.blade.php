@@ -7,7 +7,6 @@
     <title>Daftar Ruangan Gedung Zona 1 - Pertamina Hulu Rokan</title>
     
     <link rel="stylesheet" href="{{ asset('anima/zona1.css') }}">
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Work+Sans:wght@600;700&display=swap" rel="stylesheet">
@@ -54,22 +53,27 @@
             <div id="lantai{{ $lantai }}" class="ruangan-list" style="{{ $lantai == '1' ? '' : 'display: none;' }}">
                 @foreach($ruangs->where('lantai', $lantai) as $ruang)
                     @php
-                        // =================================================================
-                        // PENTING: Ganti bagian ini dengan data riwayat dari database Anda.
-                        // Ini adalah data DUMMY untuk simulasi.
-                        // Di aplikasi nyata, Anda harus mengirimkan data ini dari Controller.
-                        $dummyHistory = [];
-                        $users = ['Nadiatul Mawaddah', ];
-                        $activities = ['Induction HC dan HSE'];
-                        for ($i = 0; $i < 20; $i++) {
-                            $dummyHistory[] = [
-                                'tanggal' => \Carbon\Carbon::now()->subDays(rand(1, 30))->format('d M Y'),
-                                'peminjam' => $users[array_rand($users)],
-                                'kegiatan' => $activities[array_rand($activities)]
-                            ];
-                        }
-                        // =================================================================
-                    @endphp
+    // =================================================================
+    // PENTING: Ganti bagian ini dengan data riwayat dari database Anda.
+    // Ini adalah data DUMMY untuk simulasi.
+    // Di aplikasi nyata, Anda harus mengirimkan data ini dari Controller.
+    $dummyHistory = [];
+    $users = ['Nadiatul Mawaddah', 'Andi Permana', 'Siti Rahmawati', 'Budi Santoso', 'Dewi Lestari'];
+    $activities = ['Induction HC dan HSE', 'Rapat Evaluasi Kinerja', 'Training Penggunaan Sistem', 'Diskusi Proyek Internal', 'Presentasi Klien'];
+    
+    // --> PASTIKAN BARIS DI BAWAH INI ADA DAN BERADA SEBELUM 'for'
+    $sampleFungsi = ['HSSE', 'ICT', 'HC']; 
+
+    for ($i = 0; $i < 20; $i++) {
+        $dummyHistory[] = [
+            'tanggal' => \Carbon\Carbon::now()->subDays(rand(1, 30))->format('d M Y'),
+            'peminjam' => $users[array_rand($users)],
+            'kegiatan' => $activities[array_rand($activities)],
+            'fungsi' => $sampleFungsi[array_rand($sampleFungsi)] // Variabel $sampleFungsi digunakan di sini
+        ];
+    }
+    // =================================================================
+@endphp
 
                     <div class="ruangan-item" 
                          data-id-ruang="{{ $ruang->id }}"
@@ -110,6 +114,7 @@
                             <th>Tanggal</th>
                             <th>Peminjam</th>
                             <th>Kegiatan</th>
+                            <th>Fungsi</th>
                         </tr>
                     </thead>
                     <tbody id="modal-table-body">
@@ -162,6 +167,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <td>${item.tanggal}</td>
                 <td>${item.peminjam}</td>
                 <td>${item.kegiatan}</td>
+                <td>${item.fungsi}</td>
             `;
             tableBody.appendChild(row);
         });
