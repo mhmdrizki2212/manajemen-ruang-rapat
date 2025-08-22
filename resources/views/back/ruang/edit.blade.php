@@ -165,19 +165,38 @@
                                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
-        
-                            <!-- Fasilitas -->
-                            <div class="md:col-span-2">
-                                <label class="block text-sm font-medium text-gray-700">Fasilitas</label>
-                                @foreach($fasilitas as $item)
-                                    <label class="inline-flex items-center mt-2">
-                                        <input type="checkbox" name="fasilitas[]" value="{{ $item->id }}"
-                                            {{ in_array($item->id, $selectedFasilitas ?? []) ? 'checked' : '' }}
-                                            class="form-checkbox h-5 w-5 text-indigo-600">
-                                        <span class="ml-2 text-gray-700">{{ $item->nama }}</span>
-                                    </label><br>
-                                @endforeach
-                            </div>
+
+                            <!-- Upload Gambar -->
+<div class="md:col-span-2">
+    <label for="img" class="block text-sm font-medium text-gray-700 mb-1">Upload Gambar</label>
+    <input type="file" name="img" id="img" accept=".jpg,.jpeg,.png"
+        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-200"
+        onchange="previewImage(event)" />
+
+    <p class="text-xs text-gray-500 mt-1">Format: JPG, JPEG, PNG. Maksimal 2MB.</p>
+    @error('img')
+        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+    @enderror
+
+    <!-- Preview Gambar -->
+    <div class="mt-3">
+        @if(isset($ruang) && $ruang->img)
+            <!-- Jika sedang edit dan ada gambar lama -->
+            <img id="preview"
+                src="{{ asset('storage/' . $ruang->img) }}"
+                alt="Preview Gambar"
+                class="max-w-xs rounded-lg shadow-md border border-gray-200" />
+        @else
+            <!-- Jika tambah data baru atau belum ada gambar -->
+            <img id="preview"
+                src="#"
+                alt="Preview Gambar"
+                class="max-w-xs rounded-lg shadow-md border border-gray-200 hidden" />
+        @endif
+    </div>
+</div>
+
+
                         </div>
         
                         <!-- Tombol Simpan -->
@@ -199,6 +218,15 @@
         
      
     </div>
+
+    <!-- Script untuk preview -->
+<script>
+    function previewImage(event) {
+        const preview = document.getElementById('preview');
+        preview.src = URL.createObjectURL(event.target.files[0]);
+        preview.classList.remove('hidden');
+    }
+</script>
 
     <script>
         // Mobile sidebar toggle

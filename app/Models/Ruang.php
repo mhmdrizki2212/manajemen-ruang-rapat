@@ -35,13 +35,13 @@ class Ruang extends Model
         return $this->hasMany(Jadwal::class, 'ruang_id');
     }
 
-    /**
-     * Relasi ke model Fasilitas
-     * Satu ruang bisa memiliki banyak fasilitas
-     * dan fasilitas bisa digunakan di banyak ruang
-     */
-    public function fasilitas()
-    {
-        return $this->belongsToMany(Fasilitas::class, 'fasilitas_ruang', 'ruang_id', 'fasilitas_id');
-    }
+    // /**
+    //  * Relasi ke model Fasilitas
+    //  * Satu ruang bisa memiliki banyak fasilitas
+    //  * dan fasilitas bisa digunakan di banyak ruang
+    //  */
+    // public function fasilitas()
+    // {
+    //     return $this->belongsToMany(Fasilitas::class, 'fasilitas_ruang', 'ruang_id', 'fasilitas_id');
+    // }
 }

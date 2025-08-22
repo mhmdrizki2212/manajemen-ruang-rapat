@@ -10,9 +10,13 @@ use Carbon\Carbon;
 
 class AdminController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $today = Carbon::today('Asia/Jakarta');
+
+        // 🔹 Ambil filter tanggal (kalau tidak ada pakai default bulan ini)
+        $startDate = $request->input('start_date', Carbon::now()->startOfMonth()->toDateString());
+        $endDate   = $request->input('end_date', Carbon::now()->endOfMonth()->toDateString());
 
         // 🔹 Statistik User & Ruang
         $totalUsers = User::count();
@@ -27,6 +31,9 @@ class AdminController extends Controller
         $totalRuangTerpakaiHariIni = Jadwal::whereDate('tanggal', $today)
             ->distinct('ruang_id')
             ->count('ruang_id');
+
+        // 🔹 Ruang tidak terpakai hari ini
+        $totalRuangTidakTerpakaiHariIni = $totalRuang - $totalRuangTerpakaiHariIni;
 
         // 🔹 Data jadwal hari ini
         $jadwals = Jadwal::with(['ruang', 'userAdmin'])
@@ -45,21 +52,25 @@ class AdminController extends Controller
             return $jadwal;
         });
 
-        // 🔹 Data grafik (semua ruangan)
+        // 🔹 Data grafik (filter berdasarkan rentang tanggal)
         $ruangan = Ruang::all();
 
         $chartLabels = [];
-        $chartPemakaian = []; // jumlah jadwal
-        $chartPeserta = [];   // jumlah peserta rapat
+        $chartPemakaian = [];
+        $chartPeserta = [];
 
         foreach ($ruangan as $r) {
             $chartLabels[] = $r->nama;
 
-            // Hitung berapa kali ruangan dipakai
-            $chartPemakaian[] = Jadwal::where('ruang_id', $r->id)->count();
+            // Jumlah pemakaian ruang dalam range tanggal
+            $chartPemakaian[] = Jadwal::where('ruang_id', $r->id)
+                ->whereBetween('tanggal', [$startDate, $endDate])
+                ->count();
 
-            // Hitung total peserta rapat di ruangan tsb
-            $chartPeserta[] = Jadwal::where('ruang_id', $r->id)->sum('jumlah_peserta');
+            // Jumlah peserta total dalam range tanggal
+            $chartPeserta[] = Jadwal::where('ruang_id', $r->id)
+                ->whereBetween('tanggal', [$startDate, $endDate])
+                ->sum('jumlah_peserta');
         }
 
         return view('back.home-admin', compact(
@@ -69,10 +80,13 @@ class AdminController extends Controller
             'totalRuang',
             'totalUpcomingJadwal',
             'totalRuangTerpakaiHariIni',
+            'totalRuangTidakTerpakaiHariIni',
             'jadwals',
             'chartLabels',
             'chartPemakaian',
-            'chartPeserta'
+            'chartPeserta',
+            'startDate',
+            'endDate'
         ));
     }
 }

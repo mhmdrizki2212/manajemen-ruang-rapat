@@ -4,10 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Ruang;
 use App\Models\Gedung;
-use App\Models\Fasilitas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Carbon\Carbon; // Import Storage Laravel
+use Carbon\Carbon;
 
 class RuangController extends Controller
 {
@@ -20,9 +19,7 @@ class RuangController extends Controller
     public function create()
     {
         $gedungs = Gedung::all();
-        $fasilitas = Fasilitas::all();
-        $selectedFasilitas = [];
-        return view('back.ruang.create', compact('gedungs', 'fasilitas', 'selectedFasilitas'));
+        return view('back.ruang.create', compact('gedungs'));
     }
 
     public function store(Request $request)
@@ -31,8 +28,6 @@ class RuangController extends Controller
             'nama' => 'required|string|max:255',
             'lantai' => 'required|integer',
             'gedung_id' => 'required|exists:gedungs,id',
-            'fasilitas' => 'nullable|array',
-            'fasilitas.*' => 'exists:fasilitas,id',
             'img' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
@@ -42,16 +37,12 @@ class RuangController extends Controller
             $imgPath = $request->file('img')->store('ruangs', 'public');
         }
 
-        $ruang = Ruang::create([
+        Ruang::create([
             'nama' => $validated['nama'],
             'lantai' => $validated['lantai'],
             'gedung_id' => $validated['gedung_id'],
             'img' => $imgPath,
         ]);
-
-        if (isset($validated['fasilitas'])) {
-            $ruang->fasilitas()->sync($validated['fasilitas']);
-        }
 
         return redirect()->route('ruangs.index')->with('success', 'Ruang berhasil ditambahkan.');
     }
@@ -59,9 +50,7 @@ class RuangController extends Controller
     public function edit(Ruang $ruang)
     {
         $gedungs = Gedung::all();
-        $fasilitas = Fasilitas::all();
-        $selectedFasilitas = $ruang->fasilitas()->pluck('fasilitas.id')->toArray();
-        return view('back.ruang.edit', compact('ruang', 'gedungs', 'fasilitas', 'selectedFasilitas'));
+        return view('back.ruang.edit', compact('ruang', 'gedungs'));
     }
 
     public function update(Request $request, Ruang $ruang)
@@ -70,8 +59,6 @@ class RuangController extends Controller
             'nama' => 'required|string|max:255',
             'lantai' => 'required|integer',
             'gedung_id' => 'required|exists:gedungs,id',
-            'fasilitas' => 'nullable|array',
-            'fasilitas.*' => 'exists:fasilitas,id',
             'img' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
@@ -89,8 +76,6 @@ class RuangController extends Controller
         $ruang->gedung_id = $validated['gedung_id'];
         $ruang->save();
 
-        $ruang->fasilitas()->sync($validated['fasilitas'] ?? []);
-
         return redirect()->route('ruangs.index')->with('success', 'Ruang berhasil diperbarui.');
     }
 
@@ -101,7 +86,6 @@ class RuangController extends Controller
             Storage::disk('public')->delete($ruang->img);
         }
 
-        $ruang->fasilitas()->detach();
         $ruang->delete();
 
         return redirect()->route('ruangs.index')->with('success', 'Ruang berhasil dihapus.');
@@ -134,7 +118,7 @@ class RuangController extends Controller
         $ruang = Ruang::findOrFail($id);
 
         $history = $ruang->jadwals()
-            ->whereDate('tanggal', '<', Carbon::today()) // hanya jadwal yang sudah lewat
+            ->whereDate('tanggal', '<', Carbon::today())
             ->orderBy('tanggal', 'desc')
             ->get();
 

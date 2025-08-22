@@ -168,18 +168,6 @@
                         @enderror
                     </div>
             
-                    <!-- Fasilitas -->
-                    <div class="mb-4 md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700">Fasilitas</label>
-                        @foreach($fasilitas as $item)
-                            <label class="inline-flex items-center mt-2">
-                                <input type="checkbox" name="fasilitas[]" value="{{ $item->id }}"
-                                    {{ in_array($item->id, $selectedFasilitas) ? 'checked' : '' }}
-                                    class="form-checkbox h-5 w-5 text-indigo-600">
-                                <span class="ml-2 text-gray-700">{{ $item->nama }}</span>
-                            </label><br>
-                        @endforeach
-                    </div>
             
                     <!-- Upload Gambar -->
                     <div class="md:col-span-2">
