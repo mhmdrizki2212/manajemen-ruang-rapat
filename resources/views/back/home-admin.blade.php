@@ -141,14 +141,14 @@
                     
                     <div class="stat-card bg-white rounded-xl shadow-sm p-6 transition-all duration-300">
                         <div class="flex items-center justify-between mb-4">
-                            <div class="text-sm font-medium text-gray-500">Total Ruang</div>
+                            <div class="text-sm font-medium text-gray-500">Ruang Kosong Hari ini</div>
                             <div class="p-2 rounded-lg bg-green-50">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-inherit" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                                 </svg>
                             </div>
                         </div>
-                        <div class="text-2xl font-bold text-gray-800 mb-2">{{ $totalRuang }}</div>
+                        <div class="text-2xl font-bold text-gray-800 mb-2">{{ $totalRuangTidakTerpakaiHariIni }}</div>
                     </div>
                     
                     <div class="stat-card bg-white rounded-xl shadow-sm p-6 transition-all duration-300">
@@ -168,6 +168,7 @@
                 
                 <!-- Recent Orders -->
                 <div class="bg-white rounded-xl shadow-sm overflow-hidden mb-8">
+
                     <div class="px-6 py-4 border-b border-gray-200">
                         <div class="flex items-center justify-between">
                             <h3 class="text-lg font-semibold text-gray-800">Jadwal Hari Ini</h3>
@@ -177,172 +178,114 @@
 
                     <div class="overflow-x-auto">
                         <table class="min-w-full border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-                            <thead class="bg-gray-50">
+                            <thead class="bg-gray-100">
                                 <tr class="text-gray-700 text-xs font-semibold uppercase tracking-wider">
                                     <th class="px-4 py-3 text-left">No</th>
-                                    <th class="px-4 py-3 text-left">User</th>
                                     <th class="px-4 py-3 text-left">Ruangan</th>
+                                    <th class="px-4 py-3 text-left">Penanggung Jawab</th>
                                     <th class="px-4 py-3 text-left">Kegiatan</th>
                                     <th class="px-4 py-3 text-left">Fungsi</th>
+                                    <th class="px-4 py-3 text-left">Peserta</th>
                                     <th class="px-4 py-3 text-left">Tanggal</th>
-                                    <th class="px-4 py-3 text-left">Jam</th>
                                     <th class="px-4 py-3 text-left">Fasilitas</th>
                                     <th class="px-4 py-3 text-left">Catatan</th>
-                                    <th class="px-4 py-3 text-center">Status</th>
                                     <th class="px-4 py-3 text-center">Action</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-gray-200 text-sm">
-                                @forelse ($jadwals as $jadwal)
-                                    @php
-                                        $now = now();
-                                        $status = 'Belum Dimulai';
-                                        if ($now->between(\Carbon\Carbon::parse($jadwal->jam_mulai), \Carbon\Carbon::parse($jadwal->jam_selesai))) {
-                                            $status = 'Sedang Berlangsung';
-                                        } elseif ($now->greaterThan(\Carbon\Carbon::parse($jadwal->jam_selesai))) {
-                                            $status = 'Selesai';
-                                        }
-                                    @endphp
-                                    <tr>
-                                        <td class="px-4 py-2">{{ $loop->iteration + ($jadwals->currentPage() - 1) * $jadwals->perPage() }}</td>
-                                        <td class="px-4 py-2">{{ $jadwal->userAdmin->name ?? '-' }}</td>
-                                        <td class="px-4 py-2 font-medium text-gray-900">{{ $jadwal->ruang->nama ?? '-' }}</td>
+                            <tbody class="text-sm">
+                                @foreach ($jadwals as $jadwal)
+                                    <tr class="odd:bg-white even:bg-gray-50 hover:bg-gray-100 transition">
+                                        <td class="px-4 py-2">
+                                            {{ $loop->iteration + ($jadwals->currentPage() - 1) * $jadwals->perPage() }}
+                                        </td>
+                                        <td class="px-4 py-2 font-medium text-gray-900">
+                                            {{ $jadwal->ruang->nama ?? '-' }}
+                                        </td>
+                                        <td class="px-4 py-2">{{ $jadwal->penanggung_jawab }}</td>
                                         <td class="px-4 py-2">{{ $jadwal->nama_kegiatan }}</td>
                                         <td class="px-4 py-2">{{ $jadwal->fungsi }}</td>
-                                        <td class="px-4 py-2">{{ \Carbon\Carbon::parse($jadwal->tanggal)->format('d-m-Y') }}</td>
-                                        <td class="px-4 py-2">{{ $jadwal->jam_mulai }} - {{ $jadwal->jam_selesai }}</td>
-                                        <td class="px-4 py-2">{{ is_array($jadwal->fasilitas) ? implode(', ', $jadwal->fasilitas) : $jadwal->fasilitas }}</td>
+                                        <td class="px-4 py-2">{{ $jadwal->jumlah_peserta }}</td>
+                                        <td class="px-4 py-2">{{ \Carbon\Carbon::parse($jadwal->tanggal)->format('d M Y') }}</td>
+                                        <td class="px-4 py-2">
+                                            @if ($jadwal->fasilitas)
+                                                @foreach (is_array($jadwal->fasilitas) ? $jadwal->fasilitas : json_decode($jadwal->fasilitas, true) as $item)
+                                                    <span class="inline-block px-2 py-1 text-xs rounded bg-blue-100 text-blue-700 mr-1 mb-1">
+                                                        {{ $item }}
+                                                    </span>
+                                                @endforeach
+                                            @else
+                                                <span class="text-gray-400 text-xs">-</span>
+                                            @endif
+                                        </td>
                                         <td class="px-4 py-2">{{ $jadwal->catatan_pelaksanaan ?? '-' }}</td>
                                         <td class="px-4 py-2 text-center">
-                                            <span class="@if($status == 'Sedang Berlangsung') bg-blue-200 text-blue-800
-                                                         @elseif($status == 'Belum Dimulai') bg-yellow-200 text-yellow-800
-                                                         @else bg-green-200 text-green-800 @endif
-                                                         px-2 py-0.5 rounded-full text-xs font-medium">
-                                                {{ $status }}
-                                            </span>
-                                        </td>
-                                        <td class="px-4 py-2 text-center">
-                                            <div class="flex justify-center space-x-1">
+                                            <div class="flex justify-center space-x-2">
                                                 <a href="{{ route('jadwals.edit', $jadwal->id) }}"
-                                                   class="px-2 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 transition">
-                                                    Edit
+                                                   class="px-2 py-1 bg-blue-500 text-white text-xs rounded-lg hover:bg-blue-600 transition">
+                                                    ✏️ Edit
                                                 </a>
                                                 <form action="{{ route('jadwals.destroy', $jadwal->id) }}" method="POST" class="form-hapus">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="button"
-                                                        class="px-2 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600 transition btn-hapus">
-                                                        Delete
+                                                        class="px-2 py-1 bg-red-500 text-white text-xs rounded-lg hover:bg-red-600 transition btn-hapus">
+                                                        🗑️ Hapus
                                                     </button>
                                                 </form>
                                             </div>
                                         </td>
                                     </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="11" class="px-4 py-2 text-center text-gray-500">
-                                            Tidak ada jadwal hari ini.
-                                        </td>
-                                    </tr>
-                                @endforelse
+                                @endforeach
                             </tbody>
                         </table>
-                    
-                        <!-- Pagination -->
-                        <div class="mt-4">
-                            {{ $jadwals->links() }}
-                        </div>
                     </div>
-                    
 
                 
-                <!-- Recent Activity -->
-              <!--
-                <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-                    <div class="px-6 py-4 border-b border-gray-200">
-                        <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-semibold text-gray-800">Recent Activity</h3>
+                   
+                </div>
+                        
+                       
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden mb-8">
+                <div class="flex justify-end items-center mt-6 mb-4">
+                    <form method="GET" action="{{ route('admin.home') }}" 
+                          class="flex items-center space-x-2 bg-white p-2 rounded-lg shadow">
+                        <div>
+                            <label for="start_date" class="sr-only">Dari</label>
+                            <input type="date" id="start_date" name="start_date" 
+                                value="{{ request('start_date') }}"
+                                class="border border-gray-300 rounded-md text-sm px-2 py-1 focus:ring focus:ring-blue-300">
                         </div>
+                        <span class="text-gray-500 text-sm">s/d</span>
+                        <div>
+                            <label for="end_date" class="sr-only">Sampai</label>
+                            <input type="date" id="end_date" name="end_date" 
+                                value="{{ request('end_date') }}"
+                                class="border border-gray-300 rounded-md text-sm px-2 py-1 focus:ring focus:ring-blue-300">
+                        </div>
+                        <button type="submit" 
+                            class="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-1 rounded-md shadow">
+                            Filter
+                        </button>
+                    </form>
+                </div>
+                
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                    <!-- Grafik 1: Line Chart Pemakaian Ruangan -->
+                    <div class="bg-white shadow rounded-lg p-6">
+                        <h2 class="text-lg font-bold mb-4">📈 Pemakaian Ruangan</h2>
+                        <div id="chartPemakaian"></div>
                     </div>
                     
-                    <div class="divide-y divide-gray-200">
-                        <div class="py-4 px-6 flex items-start">
-                            <img src="https://placehold.co/40x40" alt="User profile photo with blonde hair and business attire" class="w-10 h-10 rounded-full">
-                            <div class="ml-3 flex-1">
-                                <div class="flex items-center justify-between">
-                                    <h4 class="text-sm font-medium text-gray-900">Sarah Johnson</h4>
-                                    <span class="text-xs text-gray-500">2 hours ago</span>
-                                </div>
-                                <p class="text-sm text-gray-600 mt-1">Completed account setup</p>
-                                <div class="mt-2 text-xs text-gray-500 flex items-center">
-                                    <span class="inline-block w-2 h-2 rounded-full bg-green-500 mr-2"></span>
-                                    <span>Successful</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="py-4 px-6 flex items-start">
-                            <img src="https://placehold.co/40x40" alt="User profile photo with glasses and formal wear" class="w-10 h-10 rounded-full">
-                            <div class="ml-3 flex-1">
-                                <div class="flex items-center justify-between">
-                                    <h4 class="text-sm font-medium text-gray-900">Michael Brown</h4>
-                                    <span class="text-xs text-gray-500">4 hours ago</span>
-                                </div>
-                                <p class="text-sm text-gray-600 mt-1">Updated payment information</p>
-                                <div class="mt-2 text-xs text-gray-500 flex items-center">
-                                    <span class="inline-block w-2 h-2 rounded-full bg-blue-500 mr-2"></span>
-                                    <span>Pending review</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="py-4 px-6 flex items-start">
-                            <img src="https://placehold.co/40x40" alt="User profile photo with dark hair and casual attire" class="w-10 h-10 rounded-full">
-                            <div class="ml-3 flex-1">
-                                <div class="flex items-center justify-between">
-                                    <h4 class="text-sm font-medium text-gray-900">Emily Davis</h4>
-                                    <span class="text-xs text-gray-500">6 hours ago</span>
-                                </div>
-                                <p class="text-sm text-gray-600 mt-1">Submitted a support ticket</p>
-                                <div class="mt-2 text-xs text-gray-500 flex items-center">
-                                    <span class="inline-block w-2 h-2 rounded-full bg-yellow-500 mr-2"></span>
-                                    <span>Waiting for response</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="py-4 px-6 flex items-start">
-                            <img src="https://placehold.co/40x40" alt="User profile photo with beard and professional appearance" class="w-10 h-10 rounded-full">
-                            <div class="ml-3 flex-1">
-                                <div class="flex items-center justify-between">
-                                    <h4 class="text-sm font-medium text-gray-900">David Wilson</h4>
-                                    <span class="text-xs text-gray-500">Yesterday</span>
-                                </div>
-                                <p class="text-sm text-gray-600 mt-1">Placed a new order (#7685)</p>
-                                <div class="mt-2 text-xs text-gray-500 flex items-center">
-                                    <span class="inline-block w-2 h-2 rounded-full bg-green-500 mr-2"></span>
-                                    <span>Completed</span>
-                                </div>
-                            </div>
-                        </div>
+                    <!-- Grafik 2: Bar Chart Total Peserta -->
+                    <div class="bg-white shadow rounded-lg p-6">
+                        <h2 class="text-lg font-bold mb-4">👥 Total Peserta per Ruangan</h2>
+                        <div id="chartPeserta"></div>
                     </div>
-                </div> 
-            -->
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                <!-- Grafik 1: Line Chart Pemakaian Ruangan -->
-                <div class="bg-white shadow rounded-lg p-6">
-                    <h2 class="text-lg font-bold mb-4">📈 Pemakaian Ruangan</h2>
-                    <div id="chartPemakaian"></div>
                 </div>
-            
-                <!-- Grafik 2: Bar Chart Total Peserta -->
-                <div class="bg-white shadow rounded-lg p-6">
-                    <h2 class="text-lg font-bold mb-4">👥 Total Peserta per Ruangan</h2>
-                    <div id="chartPeserta"></div>
-                </div>
+    
             </div>
-
+            
             </main>
         </div>
     </div>
@@ -373,11 +316,18 @@
         var chartPemakaian = new ApexCharts(document.querySelector("#chartPemakaian"), optionsPemakaian);
         chartPemakaian.render();
     
-        // 🔹 Grafik Bar Chart (Total Peserta)
+        // 🔹 Grafik Bar Chart (Total Peserta) → Horizontal
         var optionsPeserta = {
             chart: {
                 type: 'bar',
                 height: 350
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: true,   // 👉 ubah jadi horizontal
+                    borderRadius: 6,    // sudut membulat (opsional biar lebih rapi)
+                    barHeight: '70%'    // atur tinggi bar
+                }
             },
             series: [{
                 name: 'Total Peserta',
@@ -394,6 +344,7 @@
         var chartPeserta = new ApexCharts(document.querySelector("#chartPeserta"), optionsPeserta);
         chartPeserta.render();
     </script>
+    
     
 
     <script>

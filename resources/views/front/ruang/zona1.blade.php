@@ -28,7 +28,7 @@
             </div>
             <nav class="main-nav">
                 <a href="/">Beranda</a>
-                <a href="/#zona1" class="active">Pesan Ruangan</a>
+                <a href="/#zona1" class="active">Lihat Jadwal</a>
                 <a href="/riwayat">Riwayat</a>
             </nav>
             <div class="user-icons">
