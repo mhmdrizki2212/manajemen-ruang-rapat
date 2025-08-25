@@ -4,190 +4,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Admin Dashboard</title>
+    <title>History Ruangan</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <style>
-        :root {
-            --primary-red: #fd0017;
-            --primary-blue: #0073fe;
-            --primary-green: #9fe400;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
-        }
-
-        .sidebar {
-            transition: all 0.3s ease;
-        }
-
-        .nav-item:hover {
-            background-color: rgba(253, 0, 23, 0.1);
-        }
-
-        .nav-item.active {
-            background-color: rgba(253, 0, 23, 0.1);
-            border-left: 4px solid var(--primary-red);
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-
-        .chart-container {
-            background: linear-gradient(135deg, rgba(253, 0, 23, 0.05) 0%, rgba(0, 115, 254, 0.05) 100%);
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('anima/historyadmin.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 
 <body>
     <div class="flex h-screen overflow-hidden">
-        <!-- Sidebar -->
-        <div
-            class="sidebar bg-gradient-to-b from-white to-gray-100 w-64 border-r border-gray-200 flex flex-col shadow-lg rounded-tr-3xl rounded-br-3xl">
-            <!-- Logo -->
+        <div class="sidebar">
             <div class="flex flex-col items-center justify-center py-6 px-4">
-                <img src="{{ asset('images/logo.png') }}" alt="Logo Pertamina Hulu Rokan"
-                    class="h-20 w-20 object-contain rounded-full bg-white p-2 shadow-md mb-2">
-                <div class="text-center leading-tight">
-                    <span class="text-[22px] font-extrabold text-[#1A1A1A] tracking-tight uppercase block">SIMARU</span>
-                    <span class="text-xs text-gray-500">Sistem Informasi Manajemen Ruang</span>
+                <img src="{{ asset('images/logo.png') }}" alt="Logo Pertamina Hulu Rokan" class="logo-img">
+                <div class="text-center leading-tight mt-2">
+                    <span class="title">SIMARU</span>
+                    <span class="subtitle">Sistem Informasi Manajemen Ruang</span>
                 </div>
-
-
             </div>
-
-            <!-- Menu -->
             <nav class="flex-1 overflow-y-auto px-4 py-2">
                 <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4">Main Menu</div>
-
-                <!-- Dashboard -->
-                <a href="{{ route('admin.home') }}"
-                    class="flex items-center py-3 px-4 rounded-lg mb-2 text-gray-700 hover:bg-gray-100 hover:text-[#0073fe] transition duration-200 font-medium">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-inherit" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                    </svg>
-                    <span class="ml-3">Dashboard</span>
-                </a>
-
-                <!-- Products -->
-                <a href="{{ route('ruangs.index') }}"
-                    class="flex items-center py-3 px-4 rounded-lg mb-2 text-white bg-red-500 hover:bg-red-600 transition-all duration-200 font-semibold shadow-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-inherit" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                    </svg>
-                    <span class="ml-3">Ruang</span>
-                </a>
-
-                <!-- Calendar -->
-                <a href="{{ route('jadwals.index') }}"
-                    class="flex items-center py-3 px-4 rounded-lg mb-2 text-gray-700 hover:bg-gray-100 hover:text-[#0073fe] transition duration-200 font-medium">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-inherit" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <span class="ml-3">Jadwal Ruang</span>
-                </a>
-
-                <!-- Users -->
-                <a href="{{ route('users.index') }}"
-                    class="flex items-center py-3 px-4 rounded-lg mb-2 text-gray-700 hover:bg-gray-100 hover:text-[#0073fe] transition duration-200 font-medium">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-inherit" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
-                    <span class="ml-3">Users</span>
-                </a>
+                <a href="{{ route('admin.home') }}" class="nav-item"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg><span class="ml-3">Dashboard</span></a>
+                <a href="{{ route('ruangs.index') }}" class="nav-item active"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg><span class="ml-3">Ruang</span></a>
+                <a href="{{ route('jadwals.index') }}" class="nav-item"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg><span class="ml-3">Jadwal Ruang</span></a>
+                <a href="{{ route('users.index') }}" class="nav-item"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg><span class="ml-3">Users</span></a>
             </nav>
-
-            <!-- Logout -->
             <div class="px-4 py-6 border-t border-gray-200">
-                <div class="flex justify-center">
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit"
-                            class="inline-flex items-center gap-2 text-sm font-semibold text-white bg-red-500 hover:bg-red-600 focus:ring-2 focus:ring-red-300 px-5 py-2 rounded-lg shadow-md transition duration-200">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 11-4 0v-1m0-4v-1a2 2 0 114 0v1" />
-                            </svg>
-                            Logout
-                        </button>
-                    </form>
-                </div>
-                <div class="text-center mt-6 text-[11px] text-gray-400 px-4">
-                    © PT Pertamina Hulu Rokan Zona 1 2025.
-                </div>
-
+                <div class="flex justify-center"><form method="POST" action="{{ route('logout') }}">@csrf<button type="submit" class="logout-btn"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 11-4 0v-1m0-4v-1a2 2 0 114 0v1" /></svg>Logout</button></form></div>
+                <div class="text-center mt-6 text-[11px] text-gray-400 px-4">© PT Pertamina Hulu Rokan Zona 1 2025.</div>
             </div>
         </div>
 
+        <div class="main-content">
+            <div class="content-container">
+                <h2 class="page-title">Detail Ruangan</h2>
+                <p class="page-subtitle">History penggunaan untuk ruangan: <strong>{{ $ruang->nama }}</strong></p>
 
-<div class="max-w-6xl mx-auto p-6 bg-white rounded-lg shadow-lg">
-    <h2 class="text-2xl font-bold mb-4">History Penggunaan Ruangan: {{ $ruang->nama }}</h2>
-    
-    <table class="min-w-full border border-gray-300">
-        <thead>
-            <tr class="bg-gray-200">
-                <th class="px-4 py-2 border">Tanggal</th>
-                <th class="px-4 py-2 border">Ruang</th>
-                <th class="px-4 py-2 border">Peminjam</th>
-                <th class="px-4 py-2 border">Nama Kegiatan</th>
-                <th class="px-4 py-2 border">Fungsi</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse($history as $item)
-                <tr>
-                    <td class="px-4 py-2 border">
-                        {{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}
-                    </td>
-                    <td class="px-4 py-2 border">
-                        {{ $item->ruang->nama ?? 'Tidak Diketahui' }}
-                    </td>
-                    <td class="px-4 py-2 border">
-                        {{ $item->dmin->name ?? 'Tidak Diketahui' }}
-                    </td>
-
-                    <td class="px-4 py-2 border">
-                        {{ $item->nama_kegiatan }}
-                    </td>
-                    <td class="px-4 py-2 border">
-                        {{ $item->fungsi }}
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="6" class="px-4 py-2 border text-center text-gray-500">
-                        Belum ada data history
-                    </td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
-    
-
-    <div class="mt-4">
-        <a href="{{ route('ruangs.index') }}" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-            Kembali
-        </a>
-    </div>
-</div>
-
-
+                <div class="table-wrapper">
+                    <h3 class="table-title">History Penggunaan</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Tanggal</th>
+                                <th>Peminjam</th>
+                                <th>Nama Kegiatan</th>
+                                <th>Fungsi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($history as $item)
+                                <tr>
+                                    <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d F Y') }}</td>
+                                    <td>{{ $item->dmin->name ?? 'Tidak Diketahui' }}</td>
+                                    <td>{{ $item->nama_kegiatan }}</td>
+                                    <td>{{ $item->fungsi }}</td>
+                                </tr>
+                            @empty
+                                <tr class="empty-row">
+                                    <td colspan="4">Belum ada data history</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                     <div class="table-footer">
+                        <a href="{{ route('ruangs.index') }}" class="btn-primary">
+                            Kembali
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
+    {{-- SCRIPTS (Tidak ada perubahan) --}}
     @if (session('success'))
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -201,72 +91,5 @@
         });
     </script>
     @endif
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const deleteButtons = document.querySelectorAll('.btn-hapus');
-
-            deleteButtons.forEach(button => {
-                button.addEventListener('click', function (e) {
-                    const form = this.closest('.form-hapus');
-                    Swal.fire({
-                        title: 'Yakin ingin menghapus?',
-                        text: "Data ruangan yang dihapus tidak dapat dikembalikan.",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#d33',
-                        cancelButtonColor: '#3085d6',
-                        confirmButtonText: 'Ya, hapus!',
-                        cancelButtonText: 'Batal'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            form.submit();
-                        }
-                    });
-                });
-            });
-        });
-    </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    @if(session('not_found'))
-    <script>
-        Swal.fire({
-            icon: 'warning',
-            title: 'Tidak Ditemukan!',
-            text: '{{ session('
-            not_found ') }}',
-            confirmButtonColor: '#3085d6',
-            confirmButtonText: 'OK'
-        });
-    </script>
-    @endif
-
-
-    <script>
-        // Mobile sidebar toggle
-        document.querySelector('.lg\\:hidden').addEventListener('click', function () {
-            document.querySelector('.sidebar').classList.toggle('-translate-x-full');
-        });
-
-        // Add active class to nav items on click
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
-
-        // Animation for stat cards
-        document.querySelectorAll('.stat-card').forEach((card, index) => {
-            setTimeout(() => {
-                card.style.opacity = 1;
-                card.style.transform = 'translateY(0)';
-            }, index * 150);
-        });
-    </script>
 </body>
-
 </html>
