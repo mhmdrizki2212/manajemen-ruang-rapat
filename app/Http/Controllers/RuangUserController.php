@@ -14,7 +14,7 @@ class RuangUserController extends Controller
 
         $ruangs = Ruang::where('gedung_id', 1)
             ->with(['jadwals' => function($query) use ($today) {
-                $query->whereDate('tanggal', $today)
+                $query->whereDate('tanggal', '>=', $today) // ambil jadwal hari ini & seterusnya
                       ->orderBy('tanggal', 'asc')
                       ->with('userAdmin');
             }])
@@ -34,7 +34,7 @@ class RuangUserController extends Controller
 
         $ruangs = Ruang::where('gedung_id', 2)
             ->with(['jadwals' => function($query) use ($today) {
-                $query->whereDate('tanggal', $today)
+                $query->whereDate('tanggal', '>=', $today) // ambil jadwal hari ini & seterusnya
                       ->orderBy('tanggal', 'asc')
                       ->with('userAdmin');
             }])

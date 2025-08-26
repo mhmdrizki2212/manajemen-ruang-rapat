@@ -61,56 +61,70 @@
 
         <main class="container">
             <h1 class="main-title">Daftar Ruangan Gedung Zona 1</h1>
-
+        
             <div class="tabs-container">
                 <nav class="tabs-nav">
                     <a href="#" class="tab-link active" onclick="openTab(event, 'lantai1')">Lantai 1</a>
                     <a href="#" class="tab-link" onclick="openTab(event, 'lantai2')">Lantai 2</a>
                 </nav>
             </div>
-
+        
             @foreach(['1', '2'] as $lantai)
-            <div id="lantai{{ $lantai }}" class="ruangan-list" style="{{ $lantai == '1' ? '' : 'display: none;' }}">
-                @foreach($ruangs->where('lantai', $lantai) as $ruang)
-
-                <div class="ruangan-item"
-                data-id-ruang="{{ $ruang->id }}"
-                data-nama="{{ $ruang->nama }}"
-                data-history="{{ json_encode(
-                    $ruang->jadwals->map(function($jadwal) {
-                        return [
-                            'tanggal'   => \Carbon\Carbon::parse($jadwal->tanggal)->format('d M Y'),
-                            'peminjam'  => $jadwal->penanggung_jawab,
-                            'kegiatan'  => $jadwal->nama_kegiatan,
-                            'fungsi'    => $jadwal->fungsi,
-                        ];
-                    })
-                ) }}">
-            
-
-                        <div class="ruangan-gambar">
-                            <img src="{{ $ruang->img ? asset('storage/' . $ruang->img) : 'https://via.placeholder.com/400x250?text=No+Image' }}"
-                                alt="Ruang {{ $ruang->nama }}">
-                        </div>
-
-                        <div class="ruangan-info">
-                            <h2>{{ $ruang->nama }}</h2>
-                            <div class="jadwal-ringkas">
-                                @if($ruang->jadwals->isEmpty())
-                                    <p class="status-tersedia"><span class="status-dot"></span>Tersedia</p>
-                                @else
-                                    <p class="status-terpakai"><span class="status-dot"></span>Terpakai</p>
-                                @endif
+                <div id="lantai{{ $lantai }}" class="ruangan-list" style="{{ $lantai == '1' ? '' : 'display: none;' }}">
+                    @foreach($ruangs->where('lantai', $lantai) as $ruang)
+                        <div class="ruangan-item"
+                             data-id-ruang="{{ $ruang->id }}"
+                             data-nama="{{ $ruang->nama }}"
+                             data-history="{{ json_encode(
+                                $ruang->jadwals->map(function($jadwal) {
+                                    return [
+                                        'tanggal'   => \Carbon\Carbon::parse($jadwal->tanggal)->format('d M Y'),
+                                        'peminjam'  => $jadwal->penanggung_jawab,
+                                        'kegiatan'  => $jadwal->nama_kegiatan,
+                                        'fungsi'    => $jadwal->fungsi,
+                                    ];
+                                })
+                             ) }}">
+        
+                            <div class="ruangan-gambar">
+                                <img src="{{ $ruang->img ? asset('storage/' . $ruang->img) : 'https://via.placeholder.com/400x250?text=No+Image' }}"
+                                     alt="Ruang {{ $ruang->nama }}">
                             </div>
-                            
-                            <button class="btn btn-detail">Lihat Detail</button>
+        
+                            @php
+                                $jadwalHariIni = $ruang->jadwals->filter(function($j) {
+                                    return \Carbon\Carbon::parse($j->tanggal)->isToday();
+                                });
+                            @endphp
+        
+                            <div class="ruangan-info">
+                                <h2>{{ $ruang->nama }}</h2>
+        
+                                <div class="jadwal-ringkas">
+                                    @if($jadwalHariIni->isEmpty())
+                                        <p class="status-tersedia">
+                                            <span class="status-dot"></span> Tersedia
+                                        </p>
+                                    @else
+                                        <p class="status-terpakai">
+                                            <span class="status-dot"></span> Terpakai
+                                        </p>
+                                        @foreach($jadwalHariIni as $jadwal)
+                                            <p class="status-terpakai">
+                                                {{ $jadwal->fungsi }} : {{ $jadwal->nama_kegiatan }}
+                                            </p>
+                                        @endforeach
+                                    @endif
+                                </div>
+        
+                                <button class="btn btn-detail">Lihat Detail</button>
+                            </div>
                         </div>
-                    </div>
                     @endforeach
-            </div>
+                </div>
             @endforeach
         </main>
-
+        
         <footer>
             {{-- ... (kode footer tetap sama) ... --}}
         </footer>
