@@ -1,0 +1,145 @@
+/* General Body */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f8fafc;
+}
+
+/* --- TIDAK ADA PERUBAHAN PADA SIDEBAR --- */
+.sidebar{background:linear-gradient(to bottom,#fff,#f9fafb);width:16rem;border-right:1px solid #e5e7eb;display:flex;flex-direction:column;box-shadow:0 4px 6px rgba(0,0,0,.1);border-top-right-radius:1.5rem;border-bottom-right-radius:1.5rem}.sidebar .logo-img{height:5rem;width:5rem;object-fit:contain;border-radius:9999px;background:#fff;padding:.5rem;box-shadow:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -1px rgba(0,0,0,.06);margin-bottom:.5rem}.sidebar .title{font-size:22px;font-weight:800;color:#1A1A1A;text-transform:uppercase;letter-spacing:-.025em;display:block}.sidebar .subtitle{font-size:.75rem;color:#6b7280;display:block}.nav-item{display:flex;align-items:center;padding:.75rem 1rem;border-radius:.5rem;margin-bottom:.5rem;color:#374151;font-weight:500;transition:all .2s ease-in-out}.nav-item:hover{background-color:#f3f4f6;color:#0073fe}.nav-item.active{background-color:#ef4444;color:#fff;font-weight:600;box-shadow:0 1px 2px 0 rgba(0,0,0,.05)}.nav-item.active:hover{background-color:#dc2626}.logout-btn{display:inline-flex;align-items:center;gap:.5rem;font-size:.875rem;font-weight:600;color:#fff;background-color:#ef4444;padding:.5rem 1.25rem;border-radius:.5rem;box-shadow:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -1px rgba(0,0,0,.06);transition:all .2s ease-in-out}.logout-btn:hover{background-color:#dc2626}
+
+/* === GAYA MAIN CONTENT === */
+
+.main-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.form-container {
+    width: 100%;
+    max-width: 800px;
+    background-color: #ffffff;
+    padding: 2.5rem 3rem;
+    border-radius: 24px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.form-header h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #111;
+    margin: 0 0 0.5rem 0;
+}
+
+.form-header p {
+    font-size: 1rem;
+    color: #666;
+    margin: 0;
+}
+
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 1.25rem;
+}
+
+.form-row .form-group {
+    flex: 1;
+    min-width: 250px;
+}
+
+.form-group label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: #444;
+}
+
+.input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.input-field, .select-field {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    background-color: #f9fafb;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.input-field:focus, .select-field:focus {
+    outline: none;
+    background-color: #fff;
+    border-color: #e53935;
+    box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.15);
+}
+
+.input-wrapper .input-icon {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #888;
+}
+
+.select-field {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 1rem center;
+    background-repeat: no-repeat;
+    background-size: 1.2em;
+    padding-right: 2.5rem;
+}
+
+/* Teks error untuk validasi */
+.error-text {
+    color: #ef4444;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+
+.form-footer {
+    display: flex; justify-content: flex-end; gap: 1rem;
+    padding-top: 1.5rem; margin-top: 1rem; border-top: 1px solid #f0f0f0;
+}
+
+.btn-back {
+    padding: 0.8rem 2rem; background-color: #f3f4f6; color: #374151;
+    font-weight: 600; border-radius: 12px; border: 1px solid #e5e7eb;
+    text-decoration: none; transition: all 0.2s ease-in-out;
+}
+
+.btn-back:hover {
+    background-color: #e5e7eb;
+}
+
+.btn-primary {
+    padding: 0.8rem 2.5rem; background-color: #ef4444; color: white;
+    font-weight: 700; border-radius: 12px; transition: background-color 0.3s, transform 0.2s;
+    border: none; cursor: pointer;
+}
+
+.btn-primary:hover {
+    background-color: #dc2626; transform: translateY(-2px);
+}
