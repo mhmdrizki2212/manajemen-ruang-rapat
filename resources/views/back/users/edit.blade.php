@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Admin Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Edit User - Admin </title>
+    <link rel="icon" type="image/x-icon" href="{{ asset('anima/pertaminaicon.png') }}">    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
             --primary-red: #fd0017;

@@ -59,7 +59,7 @@ header {
 
 .logo img {
     height: 2rem; /* 32px */
-    width: 2rem; /* 32px */
+    width: 10rem; /* 32px */
     margin-right: 0.5rem; /* 8px */
 }
 
@@ -68,6 +68,7 @@ header {
     font-weight: 700;
     font-family: 'Work Sans', sans-serif;
 }
+
 
 nav {
     display: none; /* Hidden on small screens */

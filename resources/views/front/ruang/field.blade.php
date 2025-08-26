@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daftar Ruangan Gedung Zona 1 - Pertamina Hulu Rokan</title>
+    <link rel="icon" type="image/x-icon" href="{{ asset('anima/pertaminaicon.png') }}">
+
     
     <link rel="stylesheet" href="{{ asset('anima/field.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
