@@ -123,8 +123,18 @@
  
             <!-- Dashboard Content -->
             <main class="p-6">
-                <h1 class="text-2xl font-bold text-gray-800 mb-6">Dashboard Overview</h1>
+                <div class="flex items-center justify-between px-6 mb-6">
+                    <!-- Kiri -->
+                    <h1 class="text-2xl font-bold text-gray-800">Dashboard Overview</h1>
                 
+                    <!-- Kanan -->
+                    <h5 class="text-sm font-medium text-gray-800">
+                        Welcome, <span class="text-blue-600">{{ auth()->user()->name }}</span> 👋
+                    </h5>
+                    
+                </div>
+                
+                                
                 <!-- Stats Cards -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                     <div class="stat-card bg-white rounded-xl shadow-sm p-6 transition-all duration-300">

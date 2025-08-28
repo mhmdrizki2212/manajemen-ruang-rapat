@@ -10,11 +10,27 @@ use Carbon\Carbon;
 
 class RuangController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $ruangs = Ruang::with('gedung')->paginate(10);
+        $query = Ruang::with('gedung');
+
+        // filter pencarian
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('nama', 'like', "%{$search}%")
+                ->orWhere('lantai', 'like', "%{$search}%")
+                ->orWhereHas('gedung', function ($q2) use ($search) {
+                    $q2->where('nama', 'like', "%{$search}%");
+                });
+            });
+        }
+
+        $ruangs = $query->paginate(10);
+
         return view('back.ruang.index', compact('ruangs'));
     }
+
 
     public function create()
     {

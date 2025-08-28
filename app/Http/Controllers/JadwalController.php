@@ -9,14 +9,26 @@ use Illuminate\Support\Facades\Auth;
 
 class JadwalController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $jadwals = Jadwal::with(['ruang', 'userAdmin'])
-            ->latest()
-            ->paginate(10);
+        $query = Jadwal::with(['ruang', 'userAdmin'])->latest();
+
+        // Filter pencarian
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('nama_kegiatan', 'like', "%{$search}%")
+                ->orWhere('penanggung_jawab', 'like', "%{$search}%")
+                ->orWhere('fungsi', 'like', "%{$search}%")
+                ->orWhere('tanggal', 'like', "%{$search}%");
+            });
+        }
+
+        $jadwals = $query->paginate(10);
 
         return view('back.jadwal.index', compact('jadwals'));
     }
+
 
     public function create()
     {

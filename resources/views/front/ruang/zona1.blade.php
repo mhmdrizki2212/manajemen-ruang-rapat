@@ -45,7 +45,6 @@
                         </a>
                         <!-- Dropdown Menu -->
                         <div id="user-dropdown" class="dropdown-menu hidden">
-                            <a href="/profile" class="dropdown-item">Profile</a>
                             <!-- Logout -->
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
