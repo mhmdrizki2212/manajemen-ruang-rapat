@@ -41,36 +41,37 @@ Route::get('/dashboard', function () {
 | Protected Routes Based on Role
 |--------------------------------------------------------------------------
 */
-
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin', [App\Http\Controllers\AdminController::class, 'index'])->name('admin.home');
 
     Route::resource('users', UserController::class);
     Route::resource('ruangs', RuangController::class);
-    Route::resource('jadwals', JadwalController::class);
+    Route::resource('jadwals', JadwalController::class)->except(['show']);
     Route::get('/check-jadwal', [JadwalController::class, 'checkJadwal']);
 
-
-
     Route::get('/get-ruangs/{gedungId}', [JadwalController::class, 'getRuangs']);
-    // routes/web.php
     Route::get('/get-ruang/{gedung_id}', function($gedung_id) {
         $ruang = App\Models\Ruang::where('gedung_id', $gedung_id)->get();
         return response()->json($ruang);
     });
-    // web.php
-        Route::get('/get-lantai/{gedung_id}', [RuangController::class, 'getLantai']);
-        Route::get('/get-ruang/{gedung_id}/{lantai}', [RuangController::class, 'getRuang']);
-        Route::get('/ruangs/{id}/history', [\App\Http\Controllers\HistoryController::class, 'index'])
-            ->name('ruangs.history');
-        
-            Route::post('/jadwals/check', [App\Http\Controllers\JadwalController::class, 'checkJadwal'])->name('jadwals.check');
+    
+    Route::get('/get-lantai/{gedung_id}', [RuangController::class, 'getLantai']);
+    Route::get('/get-ruang/{gedung_id}/{lantai}', [RuangController::class, 'getRuang']);
+    
+    Route::get('/ruangs/{id}/history', [\App\Http\Controllers\HistoryController::class, 'index'])
+        ->name('ruangs.history');
 
+    Route::post('/jadwals/check', [App\Http\Controllers\JadwalController::class, 'checkJadwal'])
+        ->name('jadwals.check');
 
-
-
+    // ✅ Tambahan khusus request user
+    Route::get('/jadwals/requests', [App\Http\Controllers\JadwalController::class, 'requestList'])
+        ->name('jadwals.request');
+   Route::post('/jadwals/{id}/approve', [JadwalController::class, 'approve'])->name('jadwals.approve');
+    Route::post('/jadwals/{id}/reject', [JadwalController::class, 'reject'])->name('jadwals.reject');
 
 });
+
 
 Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/user', function () {
@@ -84,6 +85,8 @@ Route::middleware(['auth', 'role:user'])->group(function () {
 
     Route::get('/ruang/zona1', [RuangUserController::class, 'zona1'])->name('ruang.zona1');
     Route::get('/ruang/field', [RuangUserController::class, 'field'])->name('ruang.field');
+Route::post('/ruang/store', [RuangUserController::class, 'store'])->name('ruang.store');
+
 
 });
 

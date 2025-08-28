@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jadwal - Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        :root {
+            --primary-red: #fd0017;
+            --primary-blue: #0073fe;
+            --primary-green: #9fe400;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+        
+        .nav-item:hover {
+            background-color: rgba(253, 0, 23, 0.1);
+        }
+        
+        .nav-item.active {
+            background-color: rgba(253, 0, 23, 0.1);
+            border-left: 4px solid var(--primary-red);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .chart-container {
+            background: linear-gradient(135deg, rgba(253, 0, 23, 0.05) 0%, rgba(0, 115, 254, 0.05) 100%);
+        }
+    </style>
+</head>
+<body>
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <div class="sidebar bg-gradient-to-b from-white to-gray-100 w-64 border-r border-gray-200 flex flex-col shadow-lg rounded-tr-3xl rounded-br-3xl">
+            <!-- Logo -->
+            <div class="flex flex-col items-center justify-center py-6 px-4">
+                <img src="{{ asset('images/logo.png') }}" alt="Logo Pertamina Hulu Rokan" class="h-20 w-20 object-contain rounded-full bg-white p-2 shadow-md mb-2">
+                <div class="text-center leading-tight">
+                    <span class="text-[22px] font-extrabold text-[#1A1A1A] tracking-tight uppercase block">SIMARU</span>
+                    <span class="text-xs text-gray-500">Sistem Informasi Manajemen Ruang</span>
+                </div>
+                
+                
+             </div>
+        
+            <!-- Menu -->
+
+             <nav class="flex-1 overflow-y-auto px-4 py-2">
+                <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4">Main Menu</div>
+        
+                <!-- Dashboard -->
+                <a href="{{ route('admin.home') }}" class="flex items-center py-3 px-4 rounded-lg mb-2 text-gray-700 hover:bg-gray-100 hover:text-[#0073fe] transition duration-200 font-medium">
+                    <svg xmlns="http://www.w3.org/2000/svg" 
+                    class="h-5 w-5 text-inherit" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                    <span class="ml-3">Dashboard</span>
+                </a>
+        
+                <!-- Products -->
+                <a href="{{ route('ruangs.index') }}"
+class="flex items-center py-3 px-4 rounded-lg mb-2 text-gray-700 hover:bg-gray-100 hover:text-[#0073fe] transition duration-200 font-medium">                    
+<svg xmlns="http://www.w3.org/2000/svg" 
+                    class="h-5 w-5 text-inherit" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                    <span class="ml-3">Ruang</span>
+                </a>
+                <!-- Calendar -->
+                <a href="{{ route('jadwals.index') }}" class="flex items-center py-3 px-4 rounded-lg mb-2 text-gray-700 hover:bg-gray-100 hover:text-[#0073fe] transition duration-200 font-medium">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-inherit" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <span class="ml-3">Jadwal Ruang</span>
+                </a>
+
+                <a href="{{ route('jadwals.request') }}" 
+                    class="flex items-center py-3 px-4 rounded-lg mb-2 text-white bg-red-500 hover:bg-red-600 transition-all duration-200 font-semibold shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-inherit" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <span class="ml-3">Request Jadwal</span>
+                </a>
+        
+                <!-- Users -->
+                <a href="{{ route('users.index') }}" class="flex items-center py-3 px-4 rounded-lg mb-2 text-gray-700 hover:bg-gray-100 hover:text-[#0073fe] transition duration-200 font-medium relative">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-inherit" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    <span class="ml-3">Users</span>
+                </a>
+            </nav>
+        
+            <!-- Logout -->
+            <div class="px-4 py-6 border-t border-gray-200">
+                <div class="flex justify-center">
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="inline-flex items-center gap-2 text-sm font-semibold text-white bg-red-500 hover:bg-red-600 focus:ring-2 focus:ring-red-300 px-5 py-2 rounded-lg shadow-md transition duration-200">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 11-4 0v-1m0-4v-1a2 2 0 114 0v1" />
+                            </svg>
+                            Logout
+                        </button>
+                    </form>
+                </div>
+                <div class="text-center mt-6 text-[11px] text-gray-400 px-4">
+                    © PT Pertamina Hulu Rokan Zona 1 2025.
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <!-- Main Content -->
+        <div class="flex-1 overflow-auto">
+            @if(session('not_found'))
+    <div class="mb-4 px-4 py-3 bg-yellow-100 text-yellow-800 rounded-lg shadow text-sm">
+        {{ session('not_found') }}
+    </div>
+@endif
+
+<!-- Dashboard Content -->
+<main class="p-6">
+
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">Request Jadwal User</h1>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm overflow-hidden mb-8">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-semibold text-gray-800">List Request</h3>
+            </div>
+        </div>
+
+      <div class="overflow-x-auto">
+    <table class="min-w-full border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+        <thead class="bg-gray-100">
+            <tr class="text-gray-700 text-xs font-semibold uppercase tracking-wider">
+                <th class="px-4 py-3 text-left">No</th>
+                <th class="px-4 py-3 text-left">Ruangan</th>
+                <th class="px-4 py-3 text-left">Penanggung Jawab</th>
+                <th class="px-4 py-3 text-left">Kegiatan</th>
+                <th class="px-4 py-3 text-left">Fungsi</th>
+                <th class="px-4 py-3 text-left">Peserta</th>
+                <th class="px-4 py-3 text-left">Tanggal</th>
+                <th class="px-4 py-3 text-left">Fasilitas</th>
+                <th class="px-4 py-3 text-left">Catatan</th>
+                <th class="px-4 py-3 text-left">Status</th>
+                <th class="px-4 py-3 text-center">Action</th>
+            </tr>
+        </thead>
+        <tbody class="text-sm">
+            @foreach ($jadwals as $jadwal)
+                <tr class="odd:bg-white even:bg-gray-50 hover:bg-gray-100 transition">
+                    <td class="px-4 py-2">
+                        {{ $loop->iteration + ($jadwals->currentPage() - 1) * $jadwals->perPage() }}
+                    </td>
+                    <td class="px-4 py-2 font-medium text-gray-900">
+                        {{ $jadwal->ruang->nama ?? '-' }}
+                    </td>
+                    <td class="px-4 py-2">{{ $jadwal->penanggung_jawab }}</td>
+                    <td class="px-4 py-2">{{ $jadwal->nama_kegiatan }}</td>
+                    <td class="px-4 py-2">{{ $jadwal->fungsi }}</td>
+                    <td class="px-4 py-2">{{ $jadwal->jumlah_peserta }}</td>
+                    <td class="px-4 py-2">{{ \Carbon\Carbon::parse($jadwal->tanggal)->format('d M Y') }}</td>
+                    <td class="px-4 py-2">
+                        @php
+                            // Ubah string JSON fasilitas menjadi array jika valid
+                            $fasilitas = is_array($jadwal->fasilitas) 
+                                ? $jadwal->fasilitas 
+                                : json_decode($jadwal->fasilitas, true);
+
+                            // Pastikan hasilnya array
+                            $fasilitas = is_array($fasilitas) ? $fasilitas : [];
+                        @endphp
+
+                        @if (count($fasilitas) > 0)
+                            @foreach ($fasilitas as $item)
+                                <span class="inline-block px-2 py-1 text-xs rounded bg-blue-100 text-blue-700 mr-1 mb-1">
+                                    {{ $item }}
+                                </span>
+                            @endforeach
+                        @else
+                            <span class="text-gray-400 text-xs">-</span>
+                        @endif
+                    </td>
+
+                    <td class="px-4 py-2">{{ $jadwal->catatan_pelaksanaan ?? '-' }}</td>
+                    
+                    {{-- Status --}}
+                 <td class="px-4 py-2 text-center">
+    @if ($jadwal->status == 'pending')
+        <span class="px-2 py-1 text-xs rounded-lg bg-yellow-200 text-yellow-800">
+            Menunggu Konfirmasi
+        </span>
+    @elseif ($jadwal->status == 'approved')
+        <span class="px-2 py-1 text-xs rounded-lg bg-green-200 text-green-800">
+            Disetujui
+        </span>
+    @elseif ($jadwal->status == 'rejected')
+        <span class="px-2 py-1 text-xs rounded-lg bg-red-200 text-red-800">
+            Ditolak
+        </span>
+    @endif
+</td>
+
+                    {{-- Action --}}
+                    <td class="px-4 py-2 text-center">
+    @if ($jadwal->status == 'pending')
+        <div class="flex justify-center space-x-2">
+            <form action="{{ route('jadwals.approve', $jadwal->id) }}" method="POST">
+                @csrf
+                <button type="submit"
+                    class="px-2 py-1 bg-green-500 text-white text-xs rounded-lg hover:bg-green-600 transition">
+                    ✅ Setujui
+                </button>
+            </form>
+            <form action="{{ route('jadwals.reject', $jadwal->id) }}" method="POST">
+                @csrf
+                <button type="submit"
+                    class="px-2 py-1 bg-red-500 text-white text-xs rounded-lg hover:bg-red-600 transition">
+                    ❌ Tolak
+                </button>
+            </form>
+        </div>
+    @else
+        <span class="text-gray-400 text-xs">-</span>
+    @endif
+</td>
+
+
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
+
+
+        
+        
+        <!-- Pagination -->
+        <div class="mt-4 px-6">
+            {{ $jadwals->links() }}
+        </div>
+        
+
+       
+    </div>
+
+</main>
+ 
+
+
+    @if (session('success'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: "{{ session('success') }}",
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK'
+            });
+        });
+    </script>
+@endif
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const deleteButtons = document.querySelectorAll('.btn-hapus');
+
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function (e) {
+                const form = this.closest('.form-hapus');
+                Swal.fire({
+                    title: 'Yakin ingin menghapus?',
+                    text: "Data ruangan yang dihapus tidak dapat dikembalikan.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Ya, hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+@if(session('not_found'))
+<script>
+    Swal.fire({
+        icon: 'warning',
+        title: 'Tidak Ditemukan!',
+        text: '{{ session('not_found') }}',
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: 'OK'
+    });
+</script>
+@endif
+
+
+    <script>
+        // Mobile sidebar toggle
+        document.querySelector('.lg\\:hidden').addEventListener('click', function() {
+            document.querySelector('.sidebar').classList.toggle('-translate-x-full');
+        });
+        
+        // Add active class to nav items on click
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        
+        // Animation for stat cards
+        document.querySelectorAll('.stat-card').forEach((card, index) => {
+            setTimeout(() => {
+                card.style.opacity = 1;
+                card.style.transform = 'translateY(0)';
+            }, index * 150);
+        });
+    </script>
+</body>
+</html>

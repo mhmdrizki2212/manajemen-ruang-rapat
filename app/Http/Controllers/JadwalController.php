@@ -18,17 +18,15 @@ class JadwalController extends Controller
             $search = $request->search;
             $query->where(function($q) use ($search) {
                 $q->where('nama_kegiatan', 'like', "%{$search}%")
-                ->orWhere('penanggung_jawab', 'like', "%{$search}%")
-                ->orWhere('fungsi', 'like', "%{$search}%")
-                ->orWhere('tanggal', 'like', "%{$search}%");
+                  ->orWhere('penanggung_jawab', 'like', "%{$search}%")
+                  ->orWhere('fungsi', 'like', "%{$search}%")
+                  ->orWhere('tanggal', 'like', "%{$search}%");
             });
         }
 
         $jadwals = $query->paginate(10);
-
         return view('back.jadwal.index', compact('jadwals'));
     }
-
 
     public function create()
     {
@@ -67,8 +65,9 @@ class JadwalController extends Controller
             'fungsi'              => $request->fungsi,
             'jumlah_peserta'      => $request->jumlah_peserta,
             'tanggal'             => $request->tanggal,
-            'fasilitas'           => $request->fasilitas, // array langsung
+            'fasilitas'           => $request->fasilitas,
             'catatan_pelaksanaan' => $request->catatan_pelaksanaan,
+            'status'              => 'Pending', // default
         ]);
 
         return redirect()->route('jadwals.index')->with('success', 'Jadwal berhasil disimpan!');
@@ -114,7 +113,7 @@ class JadwalController extends Controller
             'fungsi'              => $request->fungsi,
             'jumlah_peserta'      => $request->jumlah_peserta,
             'tanggal'             => $request->tanggal,
-            'fasilitas'           => $request->fasilitas, // array langsung
+            'fasilitas'           => $request->fasilitas,
             'catatan_pelaksanaan' => $request->catatan_pelaksanaan,
         ]);
 
@@ -147,4 +146,35 @@ class JadwalController extends Controller
                 : 'Ruangan tersedia pada tanggal ini.'
         ]);
     }
+
+    /*** REQUEST LIST ***/
+    public function requestList()
+    {
+        // hanya ambil jadwal dengan status Pending
+        $jadwals = Jadwal::with('ruang')
+            ->where('status', 'Pending')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        return view('back.jadwal.request', compact('jadwals'));
+    }
+
+public function approve($id)
+{
+    $jadwal = Jadwal::findOrFail($id);
+    $jadwal->status = 'approved'; // ✅ sesuai enum
+    $jadwal->save();
+
+    return redirect()->back()->with('success', 'Jadwal berhasil disetujui.');
+}
+
+public function reject($id)
+{
+    $jadwal = Jadwal::findOrFail($id);
+    $jadwal->status = 'rejected'; // ✅ sesuai enum
+    $jadwal->save();
+
+    return redirect()->back()->with('success', 'Jadwal berhasil ditolak.');
+}
+
 }
