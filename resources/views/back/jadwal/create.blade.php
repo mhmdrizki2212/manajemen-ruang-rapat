@@ -95,8 +95,8 @@
                     <div class="form-group">
                         <label>Fasilitas</label>
                         <div class="checkbox-group">
-                            <label class="checkbox-item"><input type="checkbox" name="fasilitas[]" value="Proyektor"> classroom Fasilitas Tambahan</label>
-                            <label class="checkbox-item"><input type="checkbox" name="fasilitas[]" value="Papan Tulis"> Infocus & Screen</label>
+                            <label class="checkbox-item"><input type="checkbox" name="fasilitas[]" value="classroom Fasilitas Tambahan"> classroom Fasilitas Tambahan</label>
+                            <label class="checkbox-item"><input type="checkbox" name="fasilitas[]" value="Infocus & Screen"> Infocus & Screen</label>
                         </div>
                     </div>
         
