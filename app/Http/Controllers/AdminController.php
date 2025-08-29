@@ -13,6 +13,8 @@ class AdminController extends Controller
     public function index(Request $request)
     {
         $today = Carbon::today('Asia/Jakarta');
+        $pendingCount = Jadwal::where('status', 'pending')->count();
+
 
         // 🔹 Ambil filter tanggal (kalau tidak ada pakai default bulan ini)
         $startDate = $request->input('start_date', Carbon::now()->startOfMonth()->toDateString());
@@ -36,10 +38,10 @@ class AdminController extends Controller
         $totalRuangTidakTerpakaiHariIni = $totalRuang - $totalRuangTerpakaiHariIni;
 
         // 🔹 Data jadwal hari ini
-        $jadwals = Jadwal::with(['ruang', 'userAdmin'])
-            ->whereDate('tanggal', $today)
-            ->orderBy('tanggal', 'asc')
-            ->paginate(10);
+        $jadwals = Jadwal::with('ruang')
+        ->whereDate('tanggal', $today)   // ambil hanya jadwal hari ini
+        ->where('status', 'approved')    // ambil hanya yg approved
+        ->paginate(10);
 
         $jadwals->getCollection()->transform(function ($jadwal) use ($today) {
             if ($jadwal->tanggal == $today->toDateString()) {
@@ -86,6 +88,7 @@ class AdminController extends Controller
             'chartPemakaian',
             'chartPeserta',
             'startDate',
+            'pendingCount',
             'endDate'
         ));
     }

@@ -3,9 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jadwal - Admin</title>
+    <title> Permintaan Penggunaan Ruangan - Admin</title>
+    <link rel="icon" type="image/x-icon" href="{{ asset('anima/pertaminaicon.png') }}">
+
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -15,9 +19,10 @@
         }
         
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Poppins', sans-serif;
             background-color: #f8fafc;
         }
+
         
         .sidebar {
             transition: all 0.3s ease;
@@ -41,6 +46,7 @@
             background: linear-gradient(135deg, rgba(253, 0, 23, 0.05) 0%, rgba(0, 115, 254, 0.05) 100%);
         }
     </style>
+
 </head>
 <body>
     <div class="flex h-screen overflow-hidden">
@@ -90,13 +96,23 @@ class="flex items-center py-3 px-4 rounded-lg mb-2 text-gray-700 hover:bg-gray-1
                     <span class="ml-3">Jadwal Ruang</span>
                 </a>
 
+
                 <a href="{{ route('jadwals.request') }}" 
-                    class="flex items-center py-3 px-4 rounded-lg mb-2 text-white bg-red-500 hover:bg-red-600 transition-all duration-200 font-semibold shadow-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-inherit" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <span class="ml-3">Request Jadwal</span>
+                class="flex items-center py-3 px-4 rounded-lg mb-2 text-white bg-red-500 hover:bg-red-600 transition-all duration-200 font-semibold shadow-sm">
+                    
+                <img src="https://www.svgrepo.com/show/435937/request-send.svg" 
+                class="h-5 w-5 invert brightness-0" alt="Request Icon">
+           
+                        
+                    <span class="ml-3">Daftar Permintaan</span>
+                    @if($pendingCount > 0)
+                    <span class="ml-auto bg-white text-red-600 text-xs font-bold px-2 py-1 rounded-full shadow">
+                        {{ $pendingCount }}
+                    </span>
+                @endif
                 </a>
+              
+
         
                 <!-- Users -->
                 <a href="{{ route('users.index') }}" class="flex items-center py-3 px-4 rounded-lg mb-2 text-gray-700 hover:bg-gray-100 hover:text-[#0073fe] transition duration-200 font-medium relative">
@@ -159,11 +175,8 @@ class="flex items-center py-3 px-4 rounded-lg mb-2 text-gray-700 hover:bg-gray-1
                 <th class="px-4 py-3 text-left">Penanggung Jawab</th>
                 <th class="px-4 py-3 text-left">Kegiatan</th>
                 <th class="px-4 py-3 text-left">Fungsi</th>
-                <th class="px-4 py-3 text-left">Peserta</th>
                 <th class="px-4 py-3 text-left">Tanggal</th>
-                <th class="px-4 py-3 text-left">Fasilitas</th>
                 <th class="px-4 py-3 text-left">Catatan</th>
-                <th class="px-4 py-3 text-left">Status</th>
                 <th class="px-4 py-3 text-center">Action</th>
             </tr>
         </thead>
@@ -179,33 +192,12 @@ class="flex items-center py-3 px-4 rounded-lg mb-2 text-gray-700 hover:bg-gray-1
                     <td class="px-4 py-2">{{ $jadwal->penanggung_jawab }}</td>
                     <td class="px-4 py-2">{{ $jadwal->nama_kegiatan }}</td>
                     <td class="px-4 py-2">{{ $jadwal->fungsi }}</td>
-                    <td class="px-4 py-2">{{ $jadwal->jumlah_peserta }}</td>
                     <td class="px-4 py-2">{{ \Carbon\Carbon::parse($jadwal->tanggal)->format('d M Y') }}</td>
-                    <td class="px-4 py-2">
-                        @php
-                            // Ubah string JSON fasilitas menjadi array jika valid
-                            $fasilitas = is_array($jadwal->fasilitas) 
-                                ? $jadwal->fasilitas 
-                                : json_decode($jadwal->fasilitas, true);
 
-                            // Pastikan hasilnya array
-                            $fasilitas = is_array($fasilitas) ? $fasilitas : [];
-                        @endphp
-
-                        @if (count($fasilitas) > 0)
-                            @foreach ($fasilitas as $item)
-                                <span class="inline-block px-2 py-1 text-xs rounded bg-blue-100 text-blue-700 mr-1 mb-1">
-                                    {{ $item }}
-                                </span>
-                            @endforeach
-                        @else
-                            <span class="text-gray-400 text-xs">-</span>
-                        @endif
-                    </td>
 
                     <td class="px-4 py-2">{{ $jadwal->catatan_pelaksanaan ?? '-' }}</td>
                     
-                    {{-- Status --}}
+                    {{-- Status
                  <td class="px-4 py-2 text-center">
     @if ($jadwal->status == 'pending')
         <span class="px-2 py-1 text-xs rounded-lg bg-yellow-200 text-yellow-800">
@@ -220,7 +212,7 @@ class="flex items-center py-3 px-4 rounded-lg mb-2 text-gray-700 hover:bg-gray-1
             Ditolak
         </span>
     @endif
-</td>
+</td> --}}
 
                     {{-- Action --}}
                     <td class="px-4 py-2 text-center">

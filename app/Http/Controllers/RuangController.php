@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ruang;
+use App\Models\Jadwal;
 use App\Models\Gedung;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -13,6 +14,9 @@ class RuangController extends Controller
     public function index(Request $request)
     {
         $query = Ruang::with('gedung');
+
+        $pendingCount = Jadwal::where('status', 'pending')->count();
+
 
         // filter pencarian
         if ($request->filled('search')) {
@@ -28,14 +32,16 @@ class RuangController extends Controller
 
         $ruangs = $query->paginate(10);
 
-        return view('back.ruang.index', compact('ruangs'));
+        return view('back.ruang.index', compact('ruangs' , 'pendingCount'));
     }
 
 
     public function create()
     {
         $gedungs = Gedung::all();
-        return view('back.ruang.create', compact('gedungs'));
+        $pendingCount = Jadwal::where('status', 'pending')->count();
+
+        return view('back.ruang.create', compact('gedungs' , 'pendingCount'));
     }
 
     public function store(Request $request)
@@ -66,7 +72,9 @@ class RuangController extends Controller
     public function edit(Ruang $ruang)
     {
         $gedungs = Gedung::all();
-        return view('back.ruang.edit', compact('ruang', 'gedungs'));
+        $pendingCount = Jadwal::where('status', 'pending')->count();
+
+        return view('back.ruang.edit', compact('ruang', 'gedungs' , 'pendingCount'));
     }
 
     public function update(Request $request, Ruang $ruang)
@@ -133,11 +141,13 @@ class RuangController extends Controller
     {
         $ruang = Ruang::findOrFail($id);
 
+        
+
         $history = $ruang->jadwals()
             ->whereDate('tanggal', '<', Carbon::today())
             ->orderBy('tanggal', 'desc')
             ->get();
 
-        return view('back.ruang.history', compact('ruang', 'history'));
+        return view('back.ruang.history', compact('ruang', 'history' ));
     }
 }

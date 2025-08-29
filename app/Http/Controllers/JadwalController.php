@@ -12,6 +12,8 @@ class JadwalController extends Controller
     public function index(Request $request)
     {
         $query = Jadwal::with(['ruang', 'userAdmin'])->latest();
+        $pendingCount = Jadwal::where('status', 'pending')->count();
+
 
         // Filter pencarian
         if ($request->filled('search')) {
@@ -25,7 +27,7 @@ class JadwalController extends Controller
         }
 
         $jadwals = $query->paginate(10);
-        return view('back.jadwal.index', compact('jadwals'));
+        return view('back.jadwal.index', compact('jadwals', 'pendingCount'));
     }
 
     public function create()
@@ -77,7 +79,9 @@ class JadwalController extends Controller
     {
         $jadwal = Jadwal::findOrFail($id);
         $ruangs = Ruang::orderBy('nama')->get();
-        return view('back.jadwal.edit', compact('jadwal', 'ruangs'));
+        $pendingCount = Jadwal::where('status', 'pending')->count();
+
+        return view('back.jadwal.edit', compact('jadwal', 'ruangs' , 'pendingCount'));
     }
 
     public function update(Request $request, $id)
@@ -156,7 +160,10 @@ class JadwalController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        return view('back.jadwal.request', compact('jadwals'));
+            $pendingCount = Jadwal::where('status', 'pending')->count();
+
+
+        return view('back.jadwal.request', compact('jadwals' , 'pendingCount'));
     }
 
 public function approve($id)

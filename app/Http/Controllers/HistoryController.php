@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Ruang;
+use App\Models\Jadwal; 
 
 class HistoryController extends Controller
 {
@@ -16,6 +17,9 @@ class HistoryController extends Controller
 
         // Ambil data ruang
         $ruang = Ruang::findOrFail($ruangId);
+        $pendingCount = Jadwal::where('status', 'pending')->count();
+
+        
 
         // Ambil history jadwal (semua jadwal sebelum hari ini)
         $history = $ruang->jadwals()
@@ -24,6 +28,6 @@ class HistoryController extends Controller
             ->orderBy('tanggal', 'desc')
             ->get();
 
-        return view('back.ruang.history', compact('ruang', 'history'));
+        return view('back.ruang.history', compact('ruang', 'history' , 'pendingCount'));
     }
 }

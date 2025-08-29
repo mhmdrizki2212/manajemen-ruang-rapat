@@ -7,6 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
         :root {
             --primary-red: #fd0017;
@@ -15,9 +17,10 @@
         }
         
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Poppins', sans-serif;
             background-color: #f8fafc;
         }
+
         
         .sidebar {
             transition: all 0.3s ease;
@@ -41,6 +44,9 @@
             background: linear-gradient(135deg, rgba(253, 0, 23, 0.05) 0%, rgba(0, 115, 254, 0.05) 100%);
         }
     </style>
+    
+
+    
 </head>
 <body>
     <div class="flex h-screen overflow-hidden">
@@ -85,6 +91,15 @@
                     <span class="ml-3">Jadwal Ruang</span>
                 </a>
         
+                <a href="{{ route('jadwals.request') }}" 
+                class="flex items-center py-3 px-4 rounded-lg mb-2 text-gray-700 hover:bg-gray-100 hover:text-[#0073fe] transition duration-200 font-medium">
+                    
+                    <img src="https://www.svgrepo.com/show/435937/request-send.svg" 
+                        class="h-5 w-5" alt="Request Icon">
+                        
+                    <span class="ml-3">Daftar Permintaan</span>
+                </a>
+
                 <!-- Users -->
                 <a href="{{ route('users.index') }}" class="flex items-center py-3 px-4 rounded-lg mb-2 text-gray-700 hover:bg-gray-100 hover:text-[#0073fe] transition duration-200 font-medium">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-inherit" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -176,7 +191,7 @@
                     </tr>
                 </thead>
                 <tbody class="text-sm">
-                    @foreach ($jadwals as $jadwal)
+                    @foreach ($jadwals->where('status', 'approved') as $jadwal)
                         <tr class="odd:bg-white even:bg-gray-50 hover:bg-gray-100 transition">
                             <td class="px-4 py-2">
                                 {{ $loop->iteration + ($jadwals->currentPage() - 1) * $jadwals->perPage() }}
