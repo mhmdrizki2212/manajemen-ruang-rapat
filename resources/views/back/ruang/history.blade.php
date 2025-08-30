@@ -71,7 +71,7 @@
                             @forelse($history as $item)
                                 <tr>
                                     <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d F Y') }}</td>
-                                    <td>{{ $item->dmin->name ?? 'Tidak Diketahui' }}</td>
+                                    <td>{{ $item->penanggung_jawab}}</td>
                                     <td>{{ $item->nama_kegiatan }}</td>
                                     <td>{{ $item->fungsi }}</td>
                                 </tr>

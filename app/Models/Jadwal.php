@@ -19,7 +19,8 @@ class Jadwal extends Model
         'fungsi',
         'tanggal',
         'fasilitas',
-        'catatan_pelaksanaan'
+        'catatan_pelaksanaan',
+        'status'
     ];
     
 

@@ -14,7 +14,6 @@ class RuangController extends Controller
     public function index(Request $request)
     {
         $query = Ruang::with('gedung');
-
         $pendingCount = Jadwal::where('status', 'pending')->count();
 
 
@@ -47,7 +46,7 @@ class RuangController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nama' => 'required|string|max:255',
+            'nama' => 'required|string|max:255|unique:ruangs,nama',
             'lantai' => 'required|integer',
             'gedung_id' => 'required|exists:gedungs,id',
             'img' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
@@ -80,11 +79,12 @@ class RuangController extends Controller
     public function update(Request $request, Ruang $ruang)
     {
         $validated = $request->validate([
-            'nama' => 'required|string|max:255',
+            'nama' => 'required|string|max:255|unique:ruangs,nama,' . $ruang->id,
             'lantai' => 'required|integer',
             'gedung_id' => 'required|exists:gedungs,id',
             'img' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
+        
 
         // Simpan gambar baru jika ada
         if ($request->hasFile('img')) {

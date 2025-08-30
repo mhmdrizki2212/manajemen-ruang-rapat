@@ -205,7 +205,6 @@
                     <div class="px-6 py-4 border-b border-gray-200">
                         <div class="flex items-center justify-between">
                             <h3 class="text-lg font-semibold text-gray-800">Jadwal Hari Ini</h3>
-                            <button class="text-sm font-medium text-blue-500 hover:text-blue-700">View All</button>
                         </div>
                     </div>
 

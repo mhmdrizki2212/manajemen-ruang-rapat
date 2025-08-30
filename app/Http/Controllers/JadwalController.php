@@ -11,29 +11,35 @@ class JadwalController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Jadwal::with(['ruang', 'userAdmin'])->latest();
-        $pendingCount = Jadwal::where('status', 'pending')->count();
+        $query = Jadwal::with(['ruang', 'userAdmin'])
+            ->where('status', 'approved') // hanya ambil yang sudah approved
+            ->latest();
 
+        $pendingCount = Jadwal::where('status', 'pending')->count();
 
         // Filter pencarian
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
                 $q->where('nama_kegiatan', 'like', "%{$search}%")
-                  ->orWhere('penanggung_jawab', 'like', "%{$search}%")
-                  ->orWhere('fungsi', 'like', "%{$search}%")
-                  ->orWhere('tanggal', 'like', "%{$search}%");
+                ->orWhere('penanggung_jawab', 'like', "%{$search}%")
+                ->orWhere('fungsi', 'like', "%{$search}%")
+                ->orWhere('tanggal', 'like', "%{$search}%");
             });
         }
 
         $jadwals = $query->paginate(10);
+
         return view('back.jadwal.index', compact('jadwals', 'pendingCount'));
-    }
+}
+
 
     public function create()
     {
         $ruangs = Ruang::orderBy('nama')->get();
-        return view('back.jadwal.create', compact('ruangs'));
+        $pendingCount = Jadwal::where('status', 'pending')->count();
+
+        return view('back.jadwal.create', compact('ruangs','pendingCount'));
     }
 
     public function store(Request $request)
@@ -48,17 +54,21 @@ class JadwalController extends Controller
             'fasilitas'           => 'nullable|array',
             'fasilitas.*'         => 'string',
             'catatan_pelaksanaan' => 'nullable|string',
+            // ❌ status dihapus dari validasi, biar tidak bisa diinput manual
         ]);
-
-        // Cek apakah ruangan sudah dipakai
+    
+        // Cek apakah ruangan sudah dipakai di tanggal tersebut
         $exists = Jadwal::where('ruang_id', $request->ruang_id)
             ->whereDate('tanggal', $request->tanggal)
             ->exists();
-
+    
         if ($exists) {
             return back()->withErrors(['msg' => 'Ruangan sudah digunakan pada tanggal tersebut.'])->withInput();
         }
-
+    
+        // Tentukan status berdasarkan role (pakai lowercase semua)
+        $status = (Auth::user()->role === 'admin') ? 'approved' : 'pending';
+    
         Jadwal::create([
             'user_admin_id'       => Auth::id(),
             'ruang_id'            => $request->ruang_id,
@@ -69,11 +79,12 @@ class JadwalController extends Controller
             'tanggal'             => $request->tanggal,
             'fasilitas'           => $request->fasilitas,
             'catatan_pelaksanaan' => $request->catatan_pelaksanaan,
-            'status'              => 'Pending', // default
+            'status'              => 'approved'
         ]);
-
+    
         return redirect()->route('jadwals.index')->with('success', 'Jadwal berhasil disimpan!');
     }
+    
 
     public function edit($id)
     {
@@ -154,34 +165,31 @@ class JadwalController extends Controller
     /*** REQUEST LIST ***/
     public function requestList()
     {
-        // hanya ambil jadwal dengan status Pending
         $jadwals = Jadwal::with('ruang')
-            ->where('status', 'Pending')
+            ->where('status', 'pending')
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
-            $pendingCount = Jadwal::where('status', 'pending')->count();
-
+        $pendingCount = Jadwal::where('status', 'pending')->count();
 
         return view('back.jadwal.request', compact('jadwals' , 'pendingCount'));
     }
 
-public function approve($id)
-{
-    $jadwal = Jadwal::findOrFail($id);
-    $jadwal->status = 'approved'; // ✅ sesuai enum
-    $jadwal->save();
+    public function approve($id)
+    {
+        $jadwal = Jadwal::findOrFail($id);
+        $jadwal->status = 'approved';
+        $jadwal->save();
 
-    return redirect()->back()->with('success', 'Jadwal berhasil disetujui.');
-}
+        return redirect()->back()->with('success', 'Jadwal berhasil disetujui.');
+    }
 
-public function reject($id)
-{
-    $jadwal = Jadwal::findOrFail($id);
-    $jadwal->status = 'rejected'; // ✅ sesuai enum
-    $jadwal->save();
+    public function reject($id)
+    {
+        $jadwal = Jadwal::findOrFail($id);
+        $jadwal->status = 'rejected';
+        $jadwal->save();
 
-    return redirect()->back()->with('success', 'Jadwal berhasil ditolak.');
-}
-
+        return redirect()->back()->with('success', 'Jadwal berhasil ditolak.');
+    }
 }
